@@ -1,0 +1,106 @@
+---
+description: Next.js frontend development patterns
+globs:
+  - front/**
+alwaysApply: false
+---
+
+# Next.js Frontend — Padroes
+
+## Server Components por Padrao
+
+- Todo componente e Server Component a menos que precise de interatividade (eventos, hooks, estado)
+- Use `'use client'` **somente** quando necessario: onClick, onChange, useState, useEffect, useRef com DOM
+- Data fetching acontece em Server Components via `lib/` — nunca em Client Components
+
+## Data Fetching
+
+- Buscar dados exclusivamente via anti-corruption layer (`lib/wordpress/client.ts`)
+- Componentes **nunca** importam queries GraphQL ou chamam fetch diretamente para a API do WordPress
+- Usar `async` Server Components para data fetching:
+
+```tsx
+// page.tsx (Server Component)
+import { getPosts } from '@/lib/wordpress/client'
+
+export default async function BlogPage() {
+  const posts = await getPosts()
+  return <PostList posts={posts} />
+}
+```
+
+## Revalidacao e Cache
+
+- Blog posts: ISR com `revalidate` (ex: 60s)
+- Paginas institucionais: SSG com on-demand revalidation
+- Configurar via `export const revalidate = 60` no layout/page ou `next: { revalidate }` no fetch
+
+## TypeScript
+
+- Strict mode habilitado
+- Todas as props de componentes tipadas com interfaces
+- Tipos do WordPress centralizados em `lib/wordpress/types.ts`
+- Nunca usar `any` — preferir `unknown` quando necessario e fazer type narrowing
+
+## Tailwind CSS v4
+
+- Usar tokens do Design System mapeados (ver rule `design-system.mdc`)
+- Preferir classes utilitarias Tailwind — evitar CSS custom ou `style` inline
+- Responsividade mobile-first: classes base para mobile, prefixos `md:`, `lg:`, `xl:` para breakpoints maiores
+
+## Imagens
+
+- Sempre usar `next/image` para imagens
+- Configurar dominios do WordPress em `next.config.ts`:
+
+```ts
+images: {
+  remotePatterns: [
+    { protocol: 'https', hostname: '**.omie.com.br' },
+    { protocol: 'https', hostname: '**.wordpress.com' },
+  ],
+}
+```
+
+## SEO
+
+- Usar Metadata API do Next.js (`export const metadata` ou `generateMetadata`)
+- Cada pagina deve ter title, description, og:image
+- Blog posts: metadata dinamico via `generateMetadata` com dados do WordPress
+
+## Estrutura de Pastas
+
+```
+front/
+  app/
+    layout.tsx           # Root layout (fonts, metadata global)
+    page.tsx             # Home page
+    blog/
+      page.tsx           # Blog listing
+      [slug]/page.tsx    # Blog post individual
+    components/          # Componentes reutilizaveis (UI)
+      ui/                # Componentes atomicos (Button, Card, Input)
+      layout/            # Header, Footer, Navigation
+      blog/              # Componentes especificos de blog
+  lib/
+    wordpress/           # Anti-corruption layer (ver rule wordpress-headless)
+    utils/               # Funcoes utilitarias
+  public/                # Assets estaticos
+```
+
+## Anti-Patterns
+
+- **NAO** usar `'use client'` sem necessidade real de interatividade
+- **NAO** fazer fetch direto de APIs em componentes — usar `lib/`
+- **NAO** usar `style` inline — usar Tailwind
+- **NAO** criar CSS custom quando Tailwind resolve
+- **NAO** ignorar o Design System — sempre validar contra `site/design-system.html`
+- **NAO** usar `img` nativo — usar `next/image`
+
+## Padroes Detalhados
+
+Para guidelines completas, consulte:
+- `docs/ARCHITECTURE-OVERVIEW.md` — visao geral, decisoes arquiteturais, decision tree
+- `docs/CODING-PATTERNS.md` — lean components, separacao de responsabilidades
+- `docs/INTEGRATION-PATTERNS.md` — anti-corruption layer, WordPress integration
+- `docs/IMPLEMENTATION-CHECKLIST.md` — checklists por tipo de tarefa

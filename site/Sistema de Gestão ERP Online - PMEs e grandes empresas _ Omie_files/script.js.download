@@ -1,0 +1,402 @@
+const step1Comercial = document.querySelector('.modal-steps .step-1');
+const step2Comercial = document.querySelector('.modal-steps .step-2');
+const step3Comercial = document.querySelector('.modal-steps .step-3');
+const stepLoading = document.querySelector('.modal-steps .loading-step');
+const btnBackStepModal = document.querySelector('.modal-steps .btn-prev');
+const typeForm = document.getElementById('type-form').dataset.type_form;
+
+let fields = [];
+let submitStep1 = false;
+let prefContato = null;
+const formIdStep1 = "c85c309e-4a0f-45fd-9bde-d1b3dae9daec";
+const formIdStep2 = "372e59f3-7a37-4649-9986-5854942fc3e3";
+const formIdTrial = "e0d52240-0d1c-44b7-a6c1-b92504c3b54d";
+
+const getHubSpotUTKModals = () => {
+    const name = "hubspotutk=";
+    const decodedCookies = decodeURIComponent(document.cookie);
+    const cookiesArray = decodedCookies.split(';');
+    for (let i = 0; i < cookiesArray.length; i++) {
+        let cookie = cookiesArray[i].trim();
+        if (cookie.indexOf(name) === 0) {
+            return cookie.substring(name.length, cookie.length);
+        }
+    }
+    return null;
+}
+
+const getGa4ClientId = () => {
+    const match = document.cookie.match(/(?:^|; )_ga=([^;]+)/);
+    if (!match) return null;
+
+    const gaValue = match[1];
+    const parts = gaValue.split(".");
+
+    if (parts.length < 4) return null;
+
+    const clientId = parts[2] + "." + parts[3];
+
+    return clientId;
+}
+
+const getDeviceTypeModal = () => {
+    const ua = navigator.userAgent;
+    if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) {
+        return "tablet";
+    }
+    if (
+        /Mobile|iP(hone|od)|Android|BlackBerry|IEMobile|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(
+            ua
+        )
+    ) {
+        return "mobile";
+    }
+    return "desktop";
+};
+
+
+const isValidCNPJModal = (cnpj) => {
+    cnpj = cnpj.replace(/[^\d]+/g, '');
+
+    if (cnpj === '') return false;
+
+    if (cnpj.length !== 14)
+        return false;
+
+    // Elimina CNPJs invalidos conhecidos
+    if (cnpj === "00000000000000" ||
+        cnpj === "11111111111111" ||
+        cnpj === "22222222222222" ||
+        cnpj === "33333333333333" ||
+        cnpj === "44444444444444" ||
+        cnpj === "55555555555555" ||
+        cnpj === "66666666666666" ||
+        cnpj === "77777777777777" ||
+        cnpj === "88888888888888" ||
+        cnpj === "99999999999999")
+        return false;
+
+    // Valida DVs
+    let tamanho = cnpj.length - 2
+    let numeros = cnpj.substring(0, tamanho);
+    let digitos = cnpj.substring(tamanho);
+    let soma = 0;
+    let pos = tamanho - 7;
+    for (let i = tamanho; i >= 1; i--) {
+        soma += numeros.charAt(tamanho - i) * pos--;
+        if (pos < 2)
+            pos = 9;
+    }
+    let resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+    if (resultado != digitos.charAt(0))
+        return false;
+
+    tamanho = tamanho + 1;
+    numeros = cnpj.substring(0, tamanho);
+    soma = 0;
+    pos = tamanho - 7;
+    for (let i = tamanho; i >= 1; i--) {
+        soma += numeros.charAt(tamanho - i) * pos--;
+        if (pos < 2)
+            pos = 9;
+    }
+    resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+    if (resultado != digitos.charAt(1))
+        return false;
+
+    return true;
+}
+
+const isValidEmail = (email) => {
+    let testEmail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email);
+    if (!testEmail || email.includes['@omie', '@teste']) {
+        return false;
+    }
+    return true;
+}
+
+const clearErrorModal = () => {
+    document.querySelectorAll('.modal-steps .error-element')?.forEach(e => e.classList.remove('error-element'));
+    document.querySelectorAll('.modal-steps .text-error').forEach(e => e.textContent = "");
+}
+
+const fetchData = async (step, faturamento) => {
+    if (step == 3) return;
+
+    let formId = step == 0 ? formIdStep1 : formIdStep2;
+    stepLoading.classList.remove('d-none');
+
+    const stepHutk = getHubSpotUTKModals();
+
+    if (typeForm === 'trial' || (step == 1 && faturamento == '81000')) {
+        let isErroTrial = false;
+        try {
+            const faturamento = fields.find(e => e.name == 'faturamento');
+            const email = fields.find(e => e.name == 'email');
+            const emailEnconded = encodeURIComponent(email.value);
+            const phone = fields.find(e => e.name == 'phone');
+            const document = fields.find(e => e.name == 'cnpj');
+            const firstname = fields.find(e => e.name == 'firstname');
+            console.log("firstname: ", firstname);
+
+            const dataQuery = `redirect_to=&cookie_blog=true&nickname=${firstname.value}&user_email=${emailEnconded}&phone=${phone.value}&company=${firstname.value}&company_document=${document.value}&faturamento=${faturamento.value}&objetivo_ao_fazer_o_trial=Outros&accept=true&token=s47b6hz58z0f`;
+            console.log("dataQuery: ", dataQuery);
+            
+            await $.ajax({
+                type: 'POST',
+                url: 'https://app.omie.com.br/register/',
+                xhrFields: {
+                    withCredentials: true
+                },
+                data: dataQuery,
+                success: function (res) {
+                    console.log("res: ", res);
+                    if (res.status == 'REGISTER_FAIL') {
+                        isErroTrial = true;
+
+                        const responseMessage = res?.message;
+                        console.log('fail');
+                        if (responseMessage.includes('email') || responseMessage.includes('e-mail')) {
+                            $('.error-email').innerHTML = DOMPurify.sanitize(`Esse email já está registrado, por favor, escolha outro. Caso tenha esquecido sua senha, você pode recuperá-la <a target="_blank" rel="noopener" href="https://app.omie.com.br/login/?redirect_to=https://portal.omie.com.br/meus-aplicativos" >aqui</a>`);
+
+                        }
+                    }
+                },
+                error: function (e) {
+                    isErroTrial = true;
+                    console.log('erro');
+                    const responseMessage = e.responseJSON?.message;
+                    if (responseMessage.includes('email') || responseMessage.includes('e-mail')) {
+                        $('.error-email').innerHTML += DOMPurify.sanitize(`Esse email já está registrado, por favor, escolha outro. Caso tenha esquecido sua senha, você pode recuperá-la <a target="_blank" rel="noopener" href="https://app.omie.com.br/login/?redirect_to=https://portal.omie.com.br/meus-aplicativos" >aqui</a>`);
+                    }
+                }
+            });
+        } catch (error) {
+            console.log("error: ", error);
+            console.log("error: ", error.responseJSON.message);
+            html = error.responseJSON.message;
+            const modalBodySteps = document.querySelector('.modal-formulario.modal-steps .modal-body');
+            modalBodySteps.innerHTML = DOMPurify.sanitize(html);
+        }
+
+        if (isErroTrial) return;
+        formId = formIdTrial;
+    }
+
+    await fetch('/api/forms.php?ts=2025.004', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            fields: fields,
+            formId: formId,
+            pageUri: window.location.href,
+            pageName: window.location.href,
+            hutk: stepHutk
+        })
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status || data.status == 'error') {
+                // erroEnvio(formulario);
+            } else {
+                if (step == 0) {
+                    submitStep1 = true;
+                    // dataLayer.push({ 'event': 'form_comercial_step1' });
+                }
+
+                if (step == 1 && formId != formIdTrial) {
+                    const faturamento = fields.find(e => e.name == 'faturamento');
+
+                    dataLayer.push({
+                        'event': 'Interaction',
+                        'EventCategory': 'omie-lead-sucesso',
+                        'EventAction': 'lead-comercial-envio-sucesso',
+                        'TipoLead': 'lead-comercial',
+                        'page_ref': window.location.href,
+                        'doc_type': 'CNPJ',
+                        'faturamento': faturamento.value,
+                    });
+
+                    window.lintrk('track', { conversion_id: 7178225 });
+
+                    function uet_report_conversionComercial() { window.uetq = window.uetq || []; window.uetq.push('event', 'submit_lead_comercial_bing', {}); }
+                    uet_report_conversionComercial();
+
+                    if (typeof fbq == 'function') {
+                        fbq('track', 'Purchase', { currency: "USD", value: 30.00 });
+                        fbq('track', 'Lead');
+                    }
+                    setTimeout(() => {
+                        window.location.href = '/sucesso-empreendedor/';
+                    }, 2000);
+                    document.querySelector('.modal-steps .dots').classList.add('d-none');
+                    // document.querySelector(`.modal-steps .container-${prefContato}`).classList.remove('d-none');
+                } else if (step == 1 && formId == formIdTrial) {
+                    //disparos comercial 81k
+                    dataLayerFunc('omie-lead-sucesso', 'lead-comercial-envio-sucesso', 'lead-comercial', pageRef, faturamento);
+
+                    window.lintrk('track', { conversion_id: 7178225 });
+
+                    function uet_report_conversionComercial() { window.uetq = window.uetq || []; window.uetq.push('event', 'submit_lead_comercial_bing', {}); }
+                    uet_report_conversionComercial();
+
+                    if (typeof fbq == 'function') {
+                        fbq('track', 'Purchase', { currency: "USD", value: 30.00 });
+                        fbq('track', 'Lead');
+                    }
+
+                    //disparos trial comercial
+                    dataLayerFunc('omie-lead-sucesso', 'lead-trial-envio-sucesso', 'lead-trial', pageRef, faturamento);
+                    window.dataLayer = window.dataLayer || [];
+                    dataLayer.push({ 'event': 'form_submit_trial_comercial' });
+
+                    setTimeout(() => {
+                        window.location.href = '/sucesso-trial/';
+                    }, 2000);
+                    document.querySelector('.modal-steps .dots').classList.add('d-none');
+                }
+                stepLoading.classList.add('d-none');
+                return;
+            }
+        }).catch(e => {
+            stepLoading.classList.add('d-none');
+            throw new Error(e);
+        })
+}
+
+const nextStepComercial = async (step) => {
+    try {
+        let isValid = true;
+
+        if (step == 0) {
+            //validar step 1
+            const stepName = document.querySelector('.modal-steps #firstname');
+            const stepEmail = document.querySelector('.modal-steps #email');
+            const stepPhone = document.querySelector('.modal-steps #phone');
+
+
+            if ((stepName.value).trim() == "") {
+                document.querySelector('.modal-steps .error-firstname').textContent = 'Informe seu nome para identificação';
+                stepName.classList.add('error-element');
+                isValid = false;
+            }
+
+            if (!isValidEmail(stepEmail.value)) {
+                document.querySelector('.modal-steps .error-email').textContent = 'Digite um e-mail válido para contato';
+                stepEmail.classList.add('error-element');
+                isValid = false;
+            }
+
+            const testePhone = /^\([1-9]{2}\)(?:[2-8][0-9]{3}|9[0-9]{4})-[0-9]{4}$/.test(stepPhone.value);
+            if (!testePhone) {
+                document.querySelector('.modal-steps .error-phone').textContent = 'Informe um telefone correto';
+                stepPhone.classList.add('error-element');
+                isValid = false;
+            }
+
+            const terms = document.querySelector('.modal-steps #eu_aceito_as_condicoes_do_termo_de_uso');
+            if (!terms.checked) {
+                document.querySelector('.error-terms').textContent = 'Item obrigatório';
+                isValid = false;
+            }
+
+            if (!isValid) return;
+
+
+            const gAId = getGa4ClientId() || '';
+
+            const newDevice = getDeviceTypeModal();
+
+            let currentEmail = fields.find(e => e.name === 'email');
+            if (currentEmail?.value !== DOMPurify.sanitize(stepEmail.value)) {
+                fields = [];
+                fields.push(...[
+                    { name: 'firstname', value: DOMPurify.sanitize(stepName.value) },
+                    { name: 'email', value: DOMPurify.sanitize(stepEmail.value) },
+                    { name: 'phone', value: DOMPurify.sanitize(stepPhone.value) },
+                    { name: 'eu_aceito_as_condicoes_do_termo_de_uso', value: true },
+                    { name: 'gclid', value: gAId },
+                    { name: 'device', value: newDevice },
+                    { name: 'website', value: window.location.href },
+                ]);
+
+                await fetchData(step);
+            }
+
+            btnBackStepModal.classList.remove('d-none');
+            step1Comercial.classList.add('d-none');
+            step2Comercial.classList.remove('d-none');
+            document.querySelector(`.modal-steps .dot[data-step="${step}"]`).classList.add('disabled');
+            document.querySelector(`.modal-steps .dot[data-step="1"]`).classList.remove('disabled');
+            document.querySelector('.modal-steps #next-step').setAttribute('data-step', '1');
+            // document.querySelector('.modal-steps #next-step').textContent = 'Fale com um Especialista';
+        }
+
+        if (step == 1) {
+            //validar step 2
+
+            const stepDocument = document.querySelector('.modal-steps #cnpj');
+            const setpFaturamento = document.querySelector('.modal-steps #faturamento');
+
+
+            if (!isValidCNPJModal(stepDocument.value)) {
+                stepDocument.classList.add('error-element');
+                document.querySelector('.error-document').textContent = 'Digite um CNPJ válido';
+                isValid = false;
+            }
+
+            if (setpFaturamento.value == "") {
+                setpFaturamento.classList.add('error-element');
+                document.querySelector('.modal-steps .error-faturamento').textContent = 'Selecione uma faixa de faturamento';
+                isValid = false;
+            }
+
+            // let contactSelected = null;
+            // document.querySelectorAll('.modal-steps input[name="preferencia-contato"').forEach(e => {
+            //     if (e.checked) {
+            //         contactSelected = DOMPurify.sanitize(e.value);
+            //     }
+            // });
+
+            // if (!contactSelected) {
+            //     document.querySelector('.modal-steps .error-preferencia-contato').textContent = 'Escolha uma opção';
+            //     isValid = false;
+            // }
+
+            if (!isValid) return;
+
+            fields.push(...[
+                { name: 'cnpj', value: DOMPurify.sanitize(stepDocument.value) },
+                { name: 'faturamento', value: DOMPurify.sanitize(setpFaturamento.value) }
+                // { name: 'preferencia_contato', value: contactSelected },
+            ]);
+
+            // prefContato = contactSelected;
+            document.querySelector('.modal-steps #next-step').setAttribute('data-step', '3');
+            await fetchData(step, DOMPurify.sanitize(setpFaturamento.value));
+
+            step2Comercial.classList.add('d-none');
+            // step3Comercial.classList.remove('d-none');
+            document.querySelector('.modal-steps #next-step').classList.add('d-none');
+            btnBackStepModal.classList.add('d-none');
+        }
+    } catch (error) {
+        console.log("catch error: ", error);
+    }
+}
+
+const prevStep = () => {
+    step1Comercial.classList.remove('d-none');
+    step2Comercial.classList.add('d-none');
+    document.querySelector('.modal-steps .dot[data-step="1"]').classList.add('disabled');
+    document.querySelector('.modal-steps .dot[data-step="0"]').classList.remove('disabled');
+    document.querySelector('.modal-steps #next-step').setAttribute('data-step', '0');
+    document.querySelector('.modal-steps #next-step').textContent = 'Enviar';
+    btnBackStepModal.classList.add('d-none');
+}
+
+document.querySelector('.modal-steps #next-step').addEventListener('click', e => nextStepComercial(e.target.dataset.step));
+btnBackStepModal.addEventListener('click', prevStep);
+document.querySelectorAll('.modal-steps .input-hsb').forEach(item => item.addEventListener('input', () => clearErrorModal()));

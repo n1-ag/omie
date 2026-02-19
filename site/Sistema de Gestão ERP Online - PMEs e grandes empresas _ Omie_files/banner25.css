@@ -1,0 +1,13 @@
+.banner-home-financeiro {
+  background: linear-gradient(0deg, #A4F6FC 40%, #FFF 80%), #FFF;
+}
+
+.banner-home-financeiro h1 {
+  line-height: 1.4;
+}
+
+@media(min-width: 992px){
+  .banner-home-financeiro {
+    background: linear-gradient(90deg, #A4F6FC 22.12%, #FFF 65.38%), #FFF;
+  }
+}

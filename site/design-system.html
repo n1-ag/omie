@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="pt-BR" dir="ltr" class="webp webp-alpha webp-animation webp-lossless">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Design System | Omie</title>
+  <meta name="robots" content="noindex, nofollow">
+
+  <link rel="icon" href="https://www.omie.com.br/images/ico-O.svg" type="image/x-icon">
+  <link rel="stylesheet" href="./Sistema de Gestão ERP Online - PMEs e grandes empresas _ Omie_files/bootstrap.min.css">
+  <link rel="stylesheet" href="./Sistema de Gestão ERP Online - PMEs e grandes empresas _ Omie_files/owl.carousel.min.css">
+  <link rel="stylesheet" href="./Sistema de Gestão ERP Online - PMEs e grandes empresas _ Omie_files/style.css">
+  <link rel="stylesheet" href="./Sistema de Gestão ERP Online - PMEs e grandes empresas _ Omie_files/index.css">
+
+  <style>
+    /* ── DS-only utility styles (não existem no original) ── */
+    .ds-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: #001e27;
+      padding: 0.75rem 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      overflow-x: auto;
+      white-space: nowrap;
+      border-bottom: 3px solid #00e2f4;
+    }
+    .ds-nav a {
+      color: #f7f7f7;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      text-decoration: none;
+      padding: 0.375rem 0.75rem;
+      border-radius: 40px;
+      transition: all 0.2s;
+    }
+    .ds-nav a:hover,
+    .ds-nav a.active {
+      background: #00e2f4;
+      color: #001e27;
+    }
+    .ds-nav .ds-logo {
+      font-weight: 700;
+      font-size: 1rem;
+      color: #00e2f4;
+      margin-right: 1rem;
+      flex-shrink: 0;
+    }
+
+    .ds-section {
+      padding: 4rem 2rem;
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+    .ds-section-full {
+      padding: 0;
+      max-width: 100%;
+    }
+    .ds-section h2.ds-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #001e27;
+      margin-bottom: 0.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 3px solid #00e2f4;
+      display: inline-block;
+    }
+    .ds-section p.ds-desc {
+      color: rgba(0,30,39,.6);
+      margin-bottom: 2.5rem;
+      max-width: 640px;
+    }
+    .ds-divider {
+      border: none;
+      border-top: 1px solid rgba(0,30,39,.1);
+      margin: 3rem 0;
+    }
+
+    /* Typography spec rows */
+    .ds-type-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding: 1.25rem 0;
+      border-bottom: 1px solid rgba(0,30,39,.08);
+      gap: 2rem;
+    }
+    .ds-type-row:last-child { border-bottom: none; }
+    .ds-type-label {
+      min-width: 140px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: rgba(0,30,39,.5);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      flex-shrink: 0;
+    }
+    .ds-type-preview { flex: 1; }
+    .ds-type-spec {
+      min-width: 140px;
+      text-align: right;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: rgba(0,30,39,.4);
+      flex-shrink: 0;
+      font-family: monospace;
+    }
+
+    /* Color swatches */
+    .ds-colors-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1.5rem;
+    }
+    .ds-swatch {
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(0,30,39,.08);
+      box-shadow: 0px 4px 8px rgba(0,30,39,.02), 0px 8px 24px rgba(0,30,39,.08);
+    }
+    .ds-swatch-color {
+      height: 100px;
+      display: flex;
+      align-items: flex-end;
+      padding: 0.75rem;
+    }
+    .ds-swatch-info {
+      padding: 0.75rem;
+      background: #fff;
+    }
+    .ds-swatch-name {
+      font-weight: 700;
+      font-size: 0.875rem;
+      margin-bottom: 0.25rem;
+    }
+    .ds-swatch-value {
+      font-size: 0.75rem;
+      color: rgba(0,30,39,.5);
+      font-family: monospace;
+    }
+
+    /* Component grid */
+    .ds-component-group {
+      margin-bottom: 3rem;
+    }
+    .ds-component-group h3 {
+      font-size: 1.125rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      color: #001e27;
+    }
+    .ds-flex-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+    }
+    .ds-flex-col {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    /* Layout demo */
+    .ds-layout-demo {
+      border: 2px dashed rgba(0,30,39,.15);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .ds-layout-box {
+      background: rgba(0,226,244,.15);
+      border: 1px solid rgba(0,226,244,.4);
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: center;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #001e27;
+    }
+
+    /* Motion gallery */
+    .ds-motion-card {
+      background: #f7f7f7;
+      border-radius: 12px;
+      padding: 2rem;
+      text-align: center;
+      min-width: 200px;
+      cursor: pointer;
+    }
+    .ds-motion-card:hover .ds-motion-target {
+      animation-play-state: running;
+    }
+    .ds-motion-target {
+      width: 60px;
+      height: 60px;
+      background: #00e2f4;
+      border-radius: 12px;
+      margin: 0 auto 1rem;
+    }
+
+    /* Icon gallery */
+    .ds-icon-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 1.5rem;
+    }
+    .ds-icon-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1.5rem;
+      border-radius: 12px;
+      background: #f7f7f7;
+      transition: .2s;
+    }
+    .ds-icon-item:hover {
+      box-shadow: 0px 6px 6px 0px rgba(0,30,39,.1), 0px 16px 24px rgba(0,30,39,.15);
+      transform: translateY(-2px);
+    }
+    .ds-icon-item svg {
+      width: 32px;
+      height: 32px;
+      fill: #001e27;
+    }
+    .ds-icon-item span {
+      font-size: 0.6875rem;
+      color: rgba(0,30,39,.5);
+      text-align: center;
+    }
+
+    /* Blog post card replica */
+    .ds-blog-card {
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0px 4px 8px rgba(0,30,39,.02), 0px 8px 24px rgba(0,30,39,.08);
+    }
+    .ds-blog-card-img {
+      height: 180px;
+      object-fit: cover;
+      width: 100%;
+      border-radius: 4px;
+    }
+    .ds-blog-card-category {
+      font-family: "Poppins", sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      color: #6EC1E4;
+      border-left: 3px solid #6EC1E4;
+      padding: 4px 8px;
+      margin: 12px 0 8px;
+    }
+    .ds-blog-card-date {
+      font-family: "Poppins", sans-serif;
+      font-size: 12px;
+      font-weight: 400;
+      color: #515151;
+    }
+    .ds-blog-card-title {
+      font-family: "Poppins", sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.2em;
+      color: #131313;
+      margin: 8px 0;
+    }
+
+    /* Search (blog) */
+    .ds-search-container {
+      display: flex;
+      max-width: 500px;
+    }
+    .ds-search-input {
+      border-top: 2px solid white !important;
+      border-bottom: 2px solid white !important;
+      border-left: 2px solid white !important;
+      border-right: none !important;
+      height: 46px;
+      border-radius: 20px 0 0 20px !important;
+      background: #001e27 !important;
+      color: #fff !important;
+      padding: 0 1rem;
+      font-size: 1rem;
+      flex: 1;
+    }
+    .ds-search-input::placeholder { color: rgba(255,255,255,.5); }
+    .ds-search-btn {
+      border: 0;
+      border-radius: 0 20px 20px 0;
+      background: #d8fe00;
+      color: #001e27;
+      height: 46px;
+      border-top: 2px solid white !important;
+      border-bottom: 2px solid white !important;
+      border-right: 2px solid white !important;
+      padding: 0 1.25rem;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    /* State cards */
+    .ds-state-card {
+      background: #fff;
+      border: 1px solid rgba(0,30,39,.08);
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: center;
+      min-width: 140px;
+    }
+    .ds-state-label {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: rgba(0,30,39,.4);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     DS NAV — Anchor Navigation
+═══════════════════════════════════════════ -->
+<nav class="ds-nav" id="top">
+  <span class="ds-logo">◆ Omie DS</span>
+  <a href="#hero">Hero</a>
+  <a href="#typography">Tipografia</a>
+  <a href="#colors">Cores</a>
+  <a href="#components">Componentes</a>
+  <a href="#layout">Layout</a>
+  <a href="#motion">Motion</a>
+  <a href="#icons">Ícones</a>
+</nav>
+
+
+<!-- ═══════════════════════════════════════════
+     0) HERO — Clone Adaptado
+═══════════════════════════════════════════ -->
+<section id="hero" class="banner banner-home bg-azul" style="padding: 3rem 0;">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-7 col-conteudo">
+        <p class="subtitle-banner mb-3" style="font-size: 1rem; font-weight: 500; letter-spacing: .125rem; text-transform: uppercase;">
+          Design System
+        </p>
+        <h1 style="font-size: 2.5rem; font-weight: 700; line-height: 120%;">
+          O sistema visual completo da <span class="typewrite" style="position: relative; z-index: 1;">Omie</span>
+        </h1>
+        <description>
+          <p style="font-size: 1.125rem; font-weight: 500; margin: 1.5rem 0;">
+            Tipografia, cores, componentes, layouts e interações — tudo documentado a partir do site de referência para garantir consistência em todas as interfaces.
+          </p>
+        </description>
+        <div class="actions" style="flex-direction: row; gap: 1rem;">
+          <a href="#components" class="cta blue-cta" style="background: #001e27; border-color: #001e27; color: #fff;">
+            Ver Componentes
+          </a>
+          <a href="#colors" class="cta transparent-cta" style="border-color: #001e27;">
+            Paleta de Cores
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-5 d-none d-lg-flex align-items-center justify-content-center">
+        <div style="background: rgba(0,30,39,.08); border-radius: 1rem; width: 365px; height: 320px; display: flex; align-items: center; justify-content: center; position: relative;">
+          <div style="font-size: 6rem; font-weight: 900; color: #001e27; opacity: .15;">DS</div>
+          <div style="position: absolute; bottom: 0; left: 0; width: 100%; height: 60px; background: #F9FBFF; border-radius: 0 0 1rem 1rem;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     1) TYPOGRAPHY
+═══════════════════════════════════════════ -->
+<section id="typography" class="ds-section">
+  <h2 class="ds-title">Tipografia</h2>
+  <p class="ds-desc">Família tipográfica: <strong>Poppins</strong> (Google Fonts). Todas as variações de peso de 100 a 900 disponíveis. Cor base de texto: <code>#001e27</code>.</p>
+
+  <div class="ds-type-row">
+    <span class="ds-type-label">Heading 1<br>(Banner Home)</span>
+    <div class="ds-type-preview">
+      <h1 style="font-size: 2.5rem; font-weight: 700; line-height: 120%; margin: 0;">Sistema de Gestão ERP Online</h1>
+    </div>
+    <span class="ds-type-spec">40 px / 48 px<br>weight: 700</span>
+  </div>
+
+  <div class="ds-type-row">
+    <span class="ds-type-label">Heading 1<br>(Mobile)</span>
+    <div class="ds-type-preview">
+      <h1 style="font-size: 2rem; font-weight: 700; line-height: 120%; margin: 0;">Sistema de Gestão ERP</h1>
+    </div>
+    <span class="ds-type-spec">32 px / 38 px<br>weight: 700</span>
+  </div>
+
+  <div class="ds-type-row">
+    <span class="ds-type-label">Heading 2<br>(Section)</span>
+    <div class="ds-type-preview">
+      <h2 style="font-size: 2rem; font-weight: 700; margin: 0;">Tudo o que sua empresa precisa</h2>
+    </div>
+    <span class="ds-type-spec">32 px / 38 px<br>weight: 700</span>
+  </div>
+
+  <div class="ds-type-row">
+    <span class="ds-type-label">Heading 2<br>(Mobile)</span>
+    <div class="ds-type-preview">
+      <h2 style="font-size: 1.5rem; font-weight: 700; margin: 0;">Tudo o que sua empresa precisa</h2>
+    </div>
+    <span class="ds-type-spec">24 px / 29 px<br>weight: 700</span>
+  </div>
+
+  <div class="ds-type-row">
+    <span class="ds-type-label">Heading 3<br>(Card / Section)</span>
+    <div class="ds-type-preview">
+      <h3 style="font-size: 1.406rem; font-weight: 700; margin: 0;">Controle financeiro completo</h3>
+    </div>
+    <span class="ds-type-spec">22.5 px / 27 px<br>weight: 700</span>
+  </div>
+
+  <div class="ds-type-row">
+    <span class="ds-type-label">Heading 3<br>(Card small)</span>
+    <div class="ds-type-preview">
+      <h3 style="font-size: 1rem; font-weight: 700; margin: 0;">Emissão de notas fiscais</h3>
+    </div>
+    <span class="ds-type-spec">16 px / 24 px<br>weight: 700</span>
+  </div>
+
+  <div class="ds-type-row">
+    <span class="ds-type-label">Subtitle Banner</span>
+    <div class="ds-type-preview">
+      <p style="font-size: 1.125rem; font-weight: 500; letter-spacing: 0.225rem; text-transform: uppercase; margin: 0;">Soluções financeiras</p>
+    </div>
+    <span class="ds-type-spec">18 px / 27 px<br>weight: 500 · uppercase</span>
+  </div>
+
+  <div class="ds-type-row">
+    <span class="ds-type-label">Body Large<br>(Description)</span>
+    <div class="ds-type-preview">
+      <p style="font-size: 1.125rem; font-weight: 500; margin: 0;">Omie combina sistema de gestão online, serviços financeiros e educação empreendedora.</p>
+    </div>
+    <span class="ds-type-spec">18 px / 27 px<br>weight: 500</span>
+  </div>
+
+  <div class="ds-type-row">
+    <span class="ds-type-label">Body Regular</span>
+    <div class="ds-type-preview">
+      <p style="font-size: 1rem; font-weight: 400; margin: 0;">O sistema ERP que facilita a gestão do seu negócio e integra todas as áreas da sua empresa.</p>
+    </div>
+    <span class="ds-type-spec">16 px / 24 px<br>weight: 400</span>
+  </div>
+
+  <div class="ds-type-row">
+    <span class="ds-type-label">Body Small</span>
+    <div class="ds-type-preview">
+      <p style="font-size: 0.875rem; font-weight: 400; margin: 0;">Confira nossos planos e escolha o ideal para o seu negócio.</p>
+    </div>
+    <span class="ds-type-spec">14 px / 21 px<br>weight: 400</span>
+  </div>
+
+  <div class="ds-type-row">
+    <span class="ds-type-label">Caption /<br>Nav Desktop</span>
+    <div class="ds-type-preview">
+      <span style="font-size: 14px; font-weight: 500;">Funcionalidades</span>
+      &nbsp;&nbsp;
+      <span style="font-size: 14px; font-weight: 600;">Experimente grátis</span>
+    </div>
+    <span class="ds-type-spec">14 px / 21 px<br>weight: 500–600</span>
+  </div>
+
+  <div class="ds-type-row">
+    <span class="ds-type-label">Small / Caption</span>
+    <div class="ds-type-preview">
+      <small style="font-size: 12px; font-weight: 400;">(*) Campo obrigatório</small>
+      &nbsp;&nbsp;
+      <small style="font-size: 12px; font-weight: 600; color: #6EC1E4;">Contabilidade Empresarial</small>
+    </div>
+    <span class="ds-type-spec">12 px / 18 px<br>weight: 400–600</span>
+  </div>
+
+  <hr class="ds-divider">
+
+  <h3 style="font-weight: 700; margin-bottom: 1rem;">Estilos Especiais</h3>
+
+  <div class="ds-type-row">
+    <span class="ds-type-label">Typewrite<br>Highlight</span>
+    <div class="ds-type-preview">
+      <span style="font-size: 2rem; font-weight: 700; position: relative; z-index: 1; cursor: pointer; margin: 0 .5rem;">
+        financeiro
+        <span style="content: ''; background-color: #d8fe00; bottom: 8px; height: 1.5rem; left: -3px; position: absolute; width: 100%; z-index: -1;"></span>
+      </span>
+    </div>
+    <span class="ds-type-spec">bg: #d8fe00<br>underline effect</span>
+  </div>
+
+  <div class="ds-type-row">
+    <span class="ds-type-label">Skew Highlight<br>(Cabecalho)</span>
+    <div class="ds-type-preview">
+      <span style="position: relative; z-index: 1; padding: 0 4px; font-weight: 600; font-size: 1rem;">
+        Teste grátis
+        <span style="content: ''; position: absolute; left: 0; top: 0; background-color: #00e2f4; width: 100%; height: 100%; z-index: -1; transform: skewX(160deg);"></span>
+      </span>
+    </div>
+    <span class="ds-type-spec">bg: #00e2f4<br>skewX(160deg)</span>
+  </div>
+
+  <div class="ds-type-row">
+    <span class="ds-type-label">Texto Petróleo<br>Soft</span>
+    <div class="ds-type-preview">
+      <span class="texto-petroleo-soft" style="font-size: 1rem;">Texto com opacidade reduzida para descrições secundárias</span>
+    </div>
+    <span class="ds-type-spec">color: rgba(0,30,39,.6)</span>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     2) COLORS & SURFACES
+═══════════════════════════════════════════ -->
+<section id="colors" class="ds-section">
+  <h2 class="ds-title">Cores &amp; Superfícies</h2>
+  <p class="ds-desc">Paleta completa extraída do CSS original. Classificação por uso: marca, fundos, texto e estados.</p>
+
+  <h3 style="font-weight: 700; margin-bottom: 1.5rem;">Cores de Marca</h3>
+  <div class="ds-colors-grid" style="margin-bottom: 3rem;">
+    <div class="ds-swatch">
+      <div class="ds-swatch-color" style="background: #001e27;">
+        <span style="color: #fff; font-size: 0.75rem; font-weight: 600;">Petróleo</span>
+      </div>
+      <div class="ds-swatch-info">
+        <div class="ds-swatch-name">.bg-petroleo</div>
+        <div class="ds-swatch-value">#001e27 · rgb(0, 30, 39)</div>
+      </div>
+    </div>
+    <div class="ds-swatch">
+      <div class="ds-swatch-color" style="background: #00e2f4;">
+        <span style="color: #001e27; font-size: 0.75rem; font-weight: 600;">Azul Cyan</span>
+      </div>
+      <div class="ds-swatch-info">
+        <div class="ds-swatch-name">.bg-azul / .texto-azul-logo</div>
+        <div class="ds-swatch-value">#00e2f4 · rgb(0, 226, 244)</div>
+      </div>
+    </div>
+    <div class="ds-swatch">
+      <div class="ds-swatch-color" style="background: #d8fe00;">
+        <span style="color: #001e27; font-size: 0.75rem; font-weight: 600;">Verde Lima</span>
+      </div>
+      <div class="ds-swatch-info">
+        <div class="ds-swatch-name">.bg-verde / .texto-verde</div>
+        <div class="ds-swatch-value">#d8fe00 · rgb(216, 254, 0)</div>
+      </div>
+    </div>
+    <div class="ds-swatch">
+      <div class="ds-swatch-color" style="background: #ff601f;">
+        <span style="color: #fff; font-size: 0.75rem; font-weight: 600;">Laranja</span>
+      </div>
+      <div class="ds-swatch-info">
+        <div class="ds-swatch-name">.bg-laranja / .texto-laranja</div>
+        <div class="ds-swatch-value">#ff601f · rgb(255, 96, 31)</div>
+      </div>
+    </div>
+    <div class="ds-swatch">
+      <div class="ds-swatch-color" style="background: #5e16ff;">
+        <span style="color: #fff; font-size: 0.75rem; font-weight: 600;">Roxo</span>
+      </div>
+      <div class="ds-swatch-info">
+        <div class="ds-swatch-name">.bg-roxo</div>
+        <div class="ds-swatch-value">#5e16ff · rgb(94, 22, 255)</div>
+      </div>
+    </div>
+    <div class="ds-swatch">
+      <div class="ds-swatch-color" style="background: #a4f6fc;">
+        <span style="color: #001e27; font-size: 0.75rem; font-weight: 600;">Azul GClick</span>
+      </div>
+      <div class="ds-swatch-info">
+        <div class="ds-swatch-name">.bg-azul-gclick</div>
+        <div class="ds-swatch-value">#a4f6fc · rgb(164, 246, 252)</div>
+      </div>
+    </div>
+  </div>
+
+  <h3 style="font-weight: 700; margin-bottom: 1.5rem;">Fundos &amp; Neutros</h3>
+  <div class="ds-colors-grid" style="margin-bottom: 3rem;">
+    <div class="ds-swatch">
+      <div class="ds-swatch-color" style="background: #ffffff; border-bottom: 1px solid rgba(0,0,0,.1);">
+        <span style="color: #001e27; font-size: 0.75rem; font-weight: 600;">White</span>
+      </div>
+      <div class="ds-swatch-info">
+        <div class="ds-swatch-name">Fundo principal</div>
+        <div class="ds-swatch-value">#ffffff</div>
+      </div>
+    </div>
+    <div class="ds-swatch">
+      <div class="ds-swatch-color" style="background: #f7f7f7;">
+        <span style="color: #001e27; font-size: 0.75rem; font-weight: 600;">Cinza Claro</span>
+      </div>
+      <div class="ds-swatch-info">
+        <div class="ds-swatch-name">.bg-cinza / .text-soft-white</div>
+        <div class="ds-swatch-value">#f7f7f7 · rgb(247, 247, 247)</div>
+      </div>
+    </div>
+    <div class="ds-swatch">
+      <div class="ds-swatch-color" style="background: #eceeee;">
+        <span style="color: #001e27; font-size: 0.75rem; font-weight: 600;">Cinza Escuro</span>
+      </div>
+      <div class="ds-swatch-info">
+        <div class="ds-swatch-name">.bg-cescuro</div>
+        <div class="ds-swatch-value">#eceeee · rgb(236, 238, 238)</div>
+      </div>
+    </div>
+    <div class="ds-swatch">
+      <div class="ds-swatch-color" style="background: #dbdfde;">
+        <span style="color: #001e27; font-size: 0.75rem; font-weight: 600;">Borda</span>
+      </div>
+      <div class="ds-swatch-info">
+        <div class="ds-swatch-name">Borders / Dividers</div>
+        <div class="ds-swatch-value">#dbdfde · rgb(219, 223, 222)</div>
+      </div>
+    </div>
+    <div class="ds-swatch">
+      <div class="ds-swatch-color" style="background: #00353f;">
+        <span style="color: #fff; font-size: 0.75rem; font-weight: 600;">Petróleo Claro</span>
+      </div>
+      <div class="ds-swatch-info">
+        <div class="ds-swatch-name">Cabecalho Empreendedores</div>
+        <div class="ds-swatch-value">#00353f</div>
+      </div>
+    </div>
+    <div class="ds-swatch">
+      <div class="ds-swatch-color" style="background: #F9FBFF;">
+        <span style="color: #001e27; font-size: 0.75rem; font-weight: 600;">Blue Tint</span>
+      </div>
+      <div class="ds-swatch-info">
+        <div class="ds-swatch-name">Card Background (Svelte)</div>
+        <div class="ds-swatch-value">#F9FBFF</div>
+      </div>
+    </div>
+  </div>
+
+  <h3 style="font-weight: 700; margin-bottom: 1.5rem;">Cores de Texto</h3>
+  <div class="ds-colors-grid" style="margin-bottom: 3rem;">
+    <div class="ds-swatch">
+      <div class="ds-swatch-color" style="background: #001e27;">
+        <span style="color: #fff; font-size: 0.75rem; font-weight: 600;">Texto Principal</span>
+      </div>
+      <div class="ds-swatch-info">
+        <div class="ds-swatch-name">body color / headings</div>
+        <div class="ds-swatch-value">#001e27</div>
+      </div>
+    </div>
+    <div class="ds-swatch">
+      <div class="ds-swatch-color" style="background: rgba(0,30,39,.6);">
+        <span style="color: #fff; font-size: 0.75rem; font-weight: 600;">Texto Secundário</span>
+      </div>
+      <div class="ds-swatch-info">
+        <div class="ds-swatch-name">.texto-petroleo-soft</div>
+        <div class="ds-swatch-value">rgba(0,30,39,.6)</div>
+      </div>
+    </div>
+    <div class="ds-swatch">
+      <div class="ds-swatch-color" style="background: #131313;">
+        <span style="color: #fff; font-size: 0.75rem; font-weight: 600;">Blog Heading</span>
+      </div>
+      <div class="ds-swatch-info">
+        <div class="ds-swatch-name">Post title (blog)</div>
+        <div class="ds-swatch-value">#131313</div>
+      </div>
+    </div>
+    <div class="ds-swatch">
+      <div class="ds-swatch-color" style="background: #6EC1E4;">
+        <span style="color: #fff; font-size: 0.75rem; font-weight: 600;">Blog Category</span>
+      </div>
+      <div class="ds-swatch-info">
+        <div class="ds-swatch-name">Category badge (blog)</div>
+        <div class="ds-swatch-value">#6EC1E4</div>
+      </div>
+    </div>
+    <div class="ds-swatch">
+      <div class="ds-swatch-color" style="background: #515151;">
+        <span style="color: #fff; font-size: 0.75rem; font-weight: 600;">Blog Meta</span>
+      </div>
+      <div class="ds-swatch-info">
+        <div class="ds-swatch-name">Date / info text (blog)</div>
+        <div class="ds-swatch-value">#515151</div>
+      </div>
+    </div>
+    <div class="ds-swatch">
+      <div class="ds-swatch-color" style="background: #677489;">
+        <span style="color: #fff; font-size: 0.75rem; font-weight: 600;">Small Description</span>
+      </div>
+      <div class="ds-swatch-info">
+        <div class="ds-swatch-name">Nav dropdown desc</div>
+        <div class="ds-swatch-value">#677489</div>
+      </div>
+    </div>
+  </div>
+
+  <h3 style="font-weight: 700; margin-bottom: 1.5rem;">Gradientes &amp; Overlays</h3>
+  <div class="ds-colors-grid">
+    <div class="ds-swatch">
+      <div class="ds-swatch-color" style="background: linear-gradient(70deg, #cbcbd7 20%, #e4e4f0 70%); height: 80px;"></div>
+      <div class="ds-swatch-info">
+        <div class="ds-swatch-name">Card Banner Teste</div>
+        <div class="ds-swatch-value">linear-gradient(70deg, #cbcbd7 20%, #e4e4f0 70%)</div>
+      </div>
+    </div>
+    <div class="ds-swatch">
+      <div class="ds-swatch-color" style="background: linear-gradient(90deg, #001F28 17.79%, #00475E 68.76%); height: 80px;"></div>
+      <div class="ds-swatch-info">
+        <div class="ds-swatch-name">Campanha Section</div>
+        <div class="ds-swatch-value">linear-gradient(90deg, #001F28 17.79%, #00475E 68.76%)</div>
+      </div>
+    </div>
+    <div class="ds-swatch">
+      <div class="ds-swatch-color" style="background: rgba(0,30,39,.95); height: 80px;"></div>
+      <div class="ds-swatch-info">
+        <div class="ds-swatch-name">Modal Overlay</div>
+        <div class="ds-swatch-value">rgba(0,30,39,.95)</div>
+      </div>
+    </div>
+    <div class="ds-swatch">
+      <div class="ds-swatch-color" style="background: rgba(0,226,244,.1); height: 80px;"></div>
+      <div class="ds-swatch-info">
+        <div class="ds-swatch-name">Soft Azul</div>
+        <div class="ds-swatch-value">.bg-soft-azul · rgba(0,226,244,.1)</div>
+      </div>
+    </div>
+    <div class="ds-swatch">
+      <div class="ds-swatch-color" style="background: rgba(85,81,247,.2); height: 80px;"></div>
+      <div class="ds-swatch-info">
+        <div class="ds-swatch-name">Soft Roxo</div>
+        <div class="ds-swatch-value">.bg-soft-roxo · rgba(85,81,247,.2)</div>
+      </div>
+    </div>
+    <div class="ds-swatch">
+      <div class="ds-swatch-color" style="background: #e2fdff; height: 80px;"></div>
+      <div class="ds-swatch-info">
+        <div class="ds-swatch-name">Hover Menu / Ico BG</div>
+        <div class="ds-swatch-value">#e2fdff</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     3) UI COMPONENTS
+═══════════════════════════════════════════ -->
+<section id="components" class="ds-section">
+  <h2 class="ds-title">Componentes UI</h2>
+  <p class="ds-desc">Botões, inputs, cards e elementos de interface extraídos diretamente do CSS original com classes nativas.</p>
+
+  <!-- Buttons -->
+  <div class="ds-component-group">
+    <h3>Botões — CTA</h3>
+    <p style="font-size: 0.875rem; color: rgba(0,30,39,.6); margin-bottom: 1.5rem;">
+      Classe base: <code>.cta</code> · border-radius: 40px · padding: .625rem 1.5rem · font-weight: 700 · transition: all .2s linear
+    </p>
+
+    <div class="ds-flex-row" style="margin-bottom: 2rem;">
+      <div class="ds-flex-col" style="align-items: center;">
+        <a class="cta blue-cta" href="#">Experimente grátis</a>
+        <span class="ds-state-label">Blue CTA (default)</span>
+      </div>
+      <div class="ds-flex-col" style="align-items: center;">
+        <a class="cta green-cta" href="#">Criar conta</a>
+        <span class="ds-state-label">Green CTA</span>
+      </div>
+      <div class="ds-flex-col" style="align-items: center;">
+        <a class="cta laranja-cta" href="#">Assinar agora</a>
+        <span class="ds-state-label">Laranja CTA</span>
+      </div>
+      <div class="ds-flex-col" style="align-items: center;">
+        <a class="cta petroleo-cta" href="#">Saiba mais</a>
+        <span class="ds-state-label">Petróleo CTA</span>
+      </div>
+      <div class="ds-flex-col" style="align-items: center;">
+        <a class="cta transparent-cta" href="#">Conheça mais</a>
+        <span class="ds-state-label">Transparent CTA</span>
+      </div>
+    </div>
+
+    <div class="ds-flex-row" style="background: #001e27; padding: 2rem; border-radius: 12px; margin-bottom: 2rem;">
+      <div class="ds-flex-col" style="align-items: center;">
+        <a class="cta white-cta" href="#">Comece agora</a>
+        <span style="color: rgba(255,255,255,.5); font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.5rem;">White CTA</span>
+      </div>
+      <div class="ds-flex-col" style="align-items: center;">
+        <a class="cta transparent-cta" href="#" style="border-color: #fff; color: #fff;">Fale conosco</a>
+        <span style="color: rgba(255,255,255,.5); font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.5rem;">Transparent (dark bg)</span>
+      </div>
+      <div class="ds-flex-col" style="align-items: center;">
+        <a class="cta blue-cta" href="#">Experimente</a>
+        <span style="color: rgba(255,255,255,.5); font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.5rem;">Blue CTA (dark bg)</span>
+      </div>
+      <div class="ds-flex-col" style="align-items: center;">
+        <a class="cta green-cta" href="#">Teste grátis</a>
+        <span style="color: rgba(255,255,255,.5); font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.5rem;">Green CTA (dark bg)</span>
+      </div>
+    </div>
+
+    <h3>Botões — Form Submit</h3>
+    <div class="ds-flex-row" style="margin-bottom: 2rem;">
+      <div class="ds-flex-col" style="align-items: center;">
+        <button class="hs-button" type="button" style="width: 220px;">Experimente Agora</button>
+        <span class="ds-state-label">.hs-button (default)</span>
+      </div>
+      <div style="background: #001e27; padding: 1.5rem; border-radius: 12px;">
+        <div class="ds-flex-col" style="align-items: center;">
+          <button type="button" style="border-radius: 40px; font-weight: 700; padding: .625rem 1.5rem; background-color: #00e2f4; border: 3px solid #00e2f4; color: #001e27; width: 220px; cursor: pointer; transition: all .2s linear;">Iniciar teste</button>
+          <span style="color: rgba(255,255,255,.5); font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.5rem;">.hs-button (dark bg)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="ds-divider">
+
+  <!-- Inputs -->
+  <div class="ds-component-group">
+    <h3>Inputs — Formulário</h3>
+    <p style="font-size: 0.875rem; color: rgba(0,30,39,.6); margin-bottom: 1.5rem;">
+      Estilo: border-bottom only · 2px solid · bg transparent · focus: outline none
+    </p>
+
+    <div class="row" style="margin-bottom: 2rem;">
+      <div class="col-md-5">
+        <form style="margin: 0;">
+          <div style="margin-bottom: 1.5rem;">
+            <input type="text" placeholder="Nome completo" style="margin-top: 0;">
+          </div>
+          <div style="margin-bottom: 1.5rem;">
+            <input type="email" placeholder="E-mail corporativo" style="margin-top: 0;">
+          </div>
+          <div style="margin-bottom: 1.5rem;">
+            <input type="tel" placeholder="Telefone com DDD" style="margin-top: 0;">
+          </div>
+          <div style="margin-bottom: 1.5rem;">
+            <select style="margin-top: 0;">
+              <option value="">Selecione seu segmento</option>
+              <option>Comércio</option>
+              <option>Serviços</option>
+              <option>Indústria</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="col-md-5 offset-md-1">
+        <div style="background: #001e27; padding: 2rem; border-radius: 12px;">
+          <form style="margin: 0; color: #fff;">
+            <div style="margin-bottom: 1.5rem;">
+              <input type="text" placeholder="Nome completo" style="margin-top: 0; color: #fff; border-color: hsla(0,0%,100%,.6); background: #001e27;">
+            </div>
+            <div style="margin-bottom: 1.5rem;">
+              <input type="email" placeholder="E-mail" style="margin-top: 0; color: #fff; border-color: hsla(0,0%,100%,.6); background: #001e27;">
+            </div>
+            <button type="button" style="border-radius: 40px; font-weight: 700; padding: .625rem 1.5rem; background-color: #00e2f4; border: 3px solid #00e2f4; color: #001e27; width: 100%; cursor: pointer;">Enviar</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="ds-divider">
+
+  <!-- Cards -->
+  <div class="ds-component-group">
+    <h3>Cards — Benefícios</h3>
+    <div class="row" style="margin-bottom: 2rem;">
+      <div class="col-md-4 mb-3">
+        <div class="sec-benef">
+          <div class="card-benef" style="min-height: 220px;">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='%2300e2f4' stroke-width='2'%3E%3Crect x='3' y='3' width='18' height='18' rx='2'/%3E%3Cpath d='M9 12l2 2 4-4'/%3E%3C/svg%3E" alt="" style="width: 32px; margin-bottom: 24px;">
+            <h3 style="font-size: 1.25rem;">Controle financeiro</h3>
+            <p style="font-size: .875rem;">Gerencie contas a pagar e receber com facilidade.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 mb-3">
+        <div class="sec-benef">
+          <div class="card-benef bg-cinza" style="min-height: 220px;">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='%23ff601f' stroke-width='2'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 6v6l4 2'/%3E%3C/svg%3E" alt="" style="width: 32px; margin-bottom: 24px;">
+            <h3 style="font-size: 1.25rem;">Emissão de NF-e</h3>
+            <p style="font-size: .875rem;">Emita notas fiscais rapidamente e sem complicação.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 mb-3">
+        <div class="cards-hover">
+          <div class="card" style="width: 100%; min-height: 220px;">
+            <a href="#" style="margin-bottom: 1rem; display: flex; justify-content: space-between;">
+              <div class="tag" style="background: rgba(0,30,39,.05); font-weight: 600; padding: 4px 8px 4px 16px;">Novidade</div>
+            </a>
+            <h3 style="font-size: 1.406rem; font-weight: 400;">Integração com e-commerce</h3>
+            <p style="font-size: .875rem; color: rgba(0,30,39,.6);">Conecte sua loja virtual ao ERP.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Cards — Carrossel Carousel Banner</h3>
+    <div class="row" style="margin-bottom: 2rem;">
+      <div class="col-md-4 mb-3">
+        <div class="banner">
+          <div class="card-carousel-banner" style="background: #f7f7f7; border: 1px solid #dbdfde; border-radius: 8px; padding: 1rem; min-height: 172px;">
+            <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 1.5rem;">Módulo Financeiro</h3>
+            <p style="color: #4f5c5c;">Controle fluxo de caixa, DRE e conciliação bancária.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 mb-3">
+        <div class="banner">
+          <div class="card-carousel-banner" style="background: #f7f7f7; border: 1px solid #dbdfde; border-radius: 8px; padding: 1rem; min-height: 172px;">
+            <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 1.5rem;">Módulo Vendas</h3>
+            <p style="color: #4f5c5c;">Gerencie pedidos, propostas e funil de vendas.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Cards — Blog Post</h3>
+    <div class="row" style="margin-bottom: 2rem;">
+      <div class="col-md-4 mb-3">
+        <div class="ds-blog-card" style="padding: 1rem;">
+          <div style="height: 180px; background: linear-gradient(135deg, #00e2f4 0%, #001e27 100%); border-radius: 4px;"></div>
+          <div class="ds-blog-card-category">Contabilidade Empresarial</div>
+          <div class="ds-blog-card-date">16 fevereiro 2026</div>
+          <div class="ds-blog-card-title">Como escolher o melhor ERP para sua empresa</div>
+        </div>
+      </div>
+      <div class="col-md-4 mb-3">
+        <div class="ds-blog-card" style="padding: 1rem;">
+          <div style="height: 180px; background: linear-gradient(135deg, #d8fe00 0%, #5e16ff 100%); border-radius: 4px;"></div>
+          <div class="ds-blog-card-category">Gestão</div>
+          <div class="ds-blog-card-date">10 fevereiro 2026</div>
+          <div class="ds-blog-card-title">5 dicas para melhorar o fluxo de caixa da PME</div>
+        </div>
+      </div>
+      <div class="col-md-4 mb-3">
+        <div class="ds-blog-card" style="padding: 1rem;">
+          <div style="height: 180px; background: linear-gradient(135deg, #ff601f 0%, #d8fe00 100%); border-radius: 4px;"></div>
+          <div class="ds-blog-card-category">Marketing e vendas</div>
+          <div class="ds-blog-card-date">05 fevereiro 2026</div>
+          <div class="ds-blog-card-title">Estratégias de marketing digital para pequenas empresas</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="ds-divider">
+
+  <!-- Search (Blog) -->
+  <div class="ds-component-group">
+    <h3>Search — Blog</h3>
+    <p style="font-size: 0.875rem; color: rgba(0,30,39,.6); margin-bottom: 1.5rem;">
+      Input com bg petróleo, botão verde lima, border-radius: 20px
+    </p>
+    <div style="background: #001e27; padding: 2rem; border-radius: 12px; display: inline-block;">
+      <div class="ds-search-container">
+        <input class="ds-search-input" type="search" placeholder="Buscar no blog...">
+        <button class="ds-search-btn" type="button">▶</button>
+      </div>
+    </div>
+  </div>
+
+  <hr class="ds-divider">
+
+  <!-- FAQ Accordion -->
+  <div class="ds-component-group">
+    <h3>Accordion — FAQ</h3>
+    <div class="sec-faq" style="max-width: 700px;">
+      <div class="accordion" id="dsFaq">
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="faq1-head">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1" aria-expanded="true" aria-controls="faq1">
+              Quanto custa o sistema Omie?
+            </button>
+          </h2>
+          <div id="faq1" class="accordion-collapse collapse show" aria-labelledby="faq1-head" data-bs-parent="#dsFaq">
+            <div class="accordion-body">
+              <p>Os planos do Omie ERP começam a partir de R$ 99/mês. Consulte nossa página de preços para detalhes.</p>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="faq2-head">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2" aria-expanded="false" aria-controls="faq2">
+              É possível testar gratuitamente?
+            </button>
+          </h2>
+          <div id="faq2" class="accordion-collapse collapse" aria-labelledby="faq2-head" data-bs-parent="#dsFaq">
+            <div class="accordion-body">
+              <p>Sim! Oferecemos um período de teste gratuito para você conhecer todas as funcionalidades.</p>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="faq3-head">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3" aria-expanded="false" aria-controls="faq3">
+              O Omie emite nota fiscal?
+            </button>
+          </h2>
+          <div id="faq3" class="accordion-collapse collapse" aria-labelledby="faq3-head" data-bs-parent="#dsFaq">
+            <div class="accordion-body">
+              <p>Sim, o Omie permite emissão de NF-e, NFS-e, NFC-e e CT-e diretamente pela plataforma.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     4) LAYOUT & SPACING
+═══════════════════════════════════════════ -->
+<section id="layout" class="ds-section">
+  <h2 class="ds-title">Layout &amp; Spacing</h2>
+  <p class="ds-desc">Sistema de grid Bootstrap 5, containers, e padrões de seção usados no site. Seções usam padding vertical: 4rem (mobile) a 6rem (desktop).</p>
+
+  <div class="ds-component-group">
+    <h3>Grid — Container Bootstrap</h3>
+    <div class="ds-layout-demo">
+      <div class="container">
+        <div class="row" style="gap: 1rem 0;">
+          <div class="col-md-6 col-lg-3"><div class="ds-layout-box">col-lg-3</div></div>
+          <div class="col-md-6 col-lg-3"><div class="ds-layout-box">col-lg-3</div></div>
+          <div class="col-md-6 col-lg-3"><div class="ds-layout-box">col-lg-3</div></div>
+          <div class="col-md-6 col-lg-3"><div class="ds-layout-box">col-lg-3</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ds-component-group">
+    <h3>Padrão — Hero Split (Texto + Visual)</h3>
+    <div class="ds-layout-demo">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-lg-7">
+            <div class="ds-layout-box" style="min-height: 200px; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; text-align: left;">
+              <div style="font-size: .75rem; color: rgba(0,30,39,.5);">subtitle-banner</div>
+              <div style="font-size: 1.25rem; font-weight: 700; margin: .5rem 0;">Heading h1 · 2.5rem</div>
+              <div style="font-size: .875rem; color: rgba(0,30,39,.6); margin-bottom: 1rem;">description p · 1.125rem</div>
+              <div style="display: flex; gap: .5rem;">
+                <div style="background: #00e2f4; padding: 4px 12px; border-radius: 40px; font-size: .75rem;">.cta</div>
+                <div style="border: 2px solid #001e27; padding: 4px 12px; border-radius: 40px; font-size: .75rem;">.cta</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-5">
+            <div class="ds-layout-box" style="min-height: 200px;">Imagem / Componente Visual</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ds-component-group">
+    <h3>Padrão — Seção com Cards Grid (Blog)</h3>
+    <div class="ds-layout-demo">
+      <div class="container">
+        <div class="row">
+          <div class="col-12 col-md-6 col-lg-4 mb-3"><div class="ds-layout-box" style="min-height: 250px;">Post Card<br><small style="font-size: .6875rem;">elementor-grid-3 / tablet-2 / mobile-1</small></div></div>
+          <div class="col-12 col-md-6 col-lg-4 mb-3"><div class="ds-layout-box" style="min-height: 250px;">Post Card</div></div>
+          <div class="col-12 col-md-6 col-lg-4 mb-3"><div class="ds-layout-box" style="min-height: 250px;">Post Card</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ds-component-group">
+    <h3>Padrão — Section Paddings</h3>
+    <div class="ds-layout-demo">
+      <table style="width: 100%; font-size: .875rem;">
+        <thead>
+          <tr style="border-bottom: 2px solid rgba(0,30,39,.1);">
+            <th style="padding: .5rem; text-align: left;">Elemento</th>
+            <th style="padding: .5rem; text-align: left;">Mobile</th>
+            <th style="padding: .5rem; text-align: left;">Tablet (768px+)</th>
+            <th style="padding: .5rem; text-align: left;">Desktop (1024px+)</th>
+            <th style="padding: .5rem; text-align: left;">Wide (1366px+)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom: 1px solid rgba(0,30,39,.05);">
+            <td style="padding: .5rem; font-weight: 600;">sec-main</td>
+            <td style="padding: .5rem;">4rem 0</td>
+            <td style="padding: .5rem;">4rem 0</td>
+            <td style="padding: .5rem;">5rem 0</td>
+            <td style="padding: .5rem;">6rem 0</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(0,30,39,.05);">
+            <td style="padding: .5rem; font-weight: 600;">banner-home</td>
+            <td style="padding: .5rem;">3rem 0</td>
+            <td style="padding: .5rem;">3rem 0 (col: 3rem)</td>
+            <td style="padding: .5rem;">0 (col: 3.5rem)</td>
+            <td style="padding: .5rem;">0 (col: 6-8rem)</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(0,30,39,.05);">
+            <td style="padding: .5rem; font-weight: 600;">nav-desktop</td>
+            <td style="padding: .5rem;">—</td>
+            <td style="padding: .5rem;">—</td>
+            <td style="padding: .5rem;">1.25rem 2rem</td>
+            <td style="padding: .5rem;">1.25rem 2rem</td>
+          </tr>
+          <tr>
+            <td style="padding: .5rem; font-weight: 600;">footer .links-site</td>
+            <td style="padding: .5rem;">accordion</td>
+            <td style="padding: .5rem;">2rem</td>
+            <td style="padding: .5rem;">2rem</td>
+            <td style="padding: .5rem;">3rem</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="ds-component-group">
+    <h3>Border Radius Tokens</h3>
+    <div class="ds-flex-row" style="gap: 2rem;">
+      <div style="text-align: center;">
+        <div style="width: 80px; height: 80px; background: #00e2f4; border-radius: 8px; margin: 0 auto .5rem;"></div>
+        <small style="font-size: .75rem; color: rgba(0,30,39,.5);">8px<br>Cards</small>
+      </div>
+      <div style="text-align: center;">
+        <div style="width: 80px; height: 80px; background: #d8fe00; border-radius: 12px; margin: 0 auto .5rem;"></div>
+        <small style="font-size: .75rem; color: rgba(0,30,39,.5);">12px<br>Cards hover</small>
+      </div>
+      <div style="text-align: center;">
+        <div style="width: 80px; height: 80px; background: #ff601f; border-radius: 16px; margin: 0 auto .5rem;"></div>
+        <small style="font-size: .75rem; color: rgba(0,30,39,.5);">16px<br>Card plano</small>
+      </div>
+      <div style="text-align: center;">
+        <div style="width: 80px; height: 80px; background: #5e16ff; border-radius: 1rem; margin: 0 auto .5rem;"></div>
+        <small style="font-size: .75rem; color: rgba(0,30,39,.5);">1rem<br>Card ravena</small>
+      </div>
+      <div style="text-align: center;">
+        <div style="width: 80px; height: 40px; background: #001e27; border-radius: 40px; margin: 0 auto .5rem;"></div>
+        <small style="font-size: .75rem; color: rgba(0,30,39,.5);">40px<br>Buttons</small>
+      </div>
+      <div style="text-align: center;">
+        <div style="width: 60px; height: 60px; background: #00a027; border-radius: 50%; margin: 0 auto .5rem;"></div>
+        <small style="font-size: .75rem; color: rgba(0,30,39,.5);">50%<br>Circle/FAB</small>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     5) MOTION & INTERACTION
+═══════════════════════════════════════════ -->
+<section id="motion" class="ds-section">
+  <h2 class="ds-title">Motion &amp; Interação</h2>
+  <p class="ds-desc">Animações, transições e comportamentos hover extraídos dos keyframes e classes CSS originais.</p>
+
+  <div class="ds-component-group">
+    <h3>Motion Gallery</h3>
+    <div class="ds-flex-row" style="gap: 1.5rem;">
+
+      <div class="ds-motion-card">
+        <div class="ds-motion-target" style="animation: pulse 1s infinite;"></div>
+        <strong style="font-size: .875rem;">Pulse</strong>
+        <p style="font-size: .75rem; color: rgba(0,30,39,.5); margin: .25rem 0 0;">WhatsApp FAB<br>1s infinite</p>
+      </div>
+
+      <div class="ds-motion-card">
+        <div class="ds-motion-target" style="animation: showUp .5s forwards; border-radius: 4px;"></div>
+        <strong style="font-size: .875rem;">ShowUp</strong>
+        <p style="font-size: .75rem; color: rgba(0,30,39,.5); margin: .25rem 0 0;">Nav sticky<br>0.5s forwards</p>
+      </div>
+
+      <div class="ds-motion-card">
+        <div class="ds-motion-target" style="animation: spinner 2s infinite linear; border-radius: 50%; border: 3px solid transparent; border-left: 3px solid #001e27; background: transparent;"></div>
+        <strong style="font-size: .875rem;">Spinner</strong>
+        <p style="font-size: .75rem; color: rgba(0,30,39,.5); margin: .25rem 0 0;">Loading state<br>2s infinite</p>
+      </div>
+
+      <div class="ds-motion-card" style="overflow: hidden;">
+        <div class="ds-motion-target" style="animation: animaDropLeft .3s forwards; border-radius: 8px;"></div>
+        <strong style="font-size: .875rem;">DropLeft</strong>
+        <p style="font-size: .75rem; color: rgba(0,30,39,.5); margin: .25rem 0 0;">Menu dropdown<br>0.2s forwards</p>
+      </div>
+
+    </div>
+  </div>
+
+  <hr class="ds-divider">
+
+  <div class="ds-component-group">
+    <h3>Hover States — Botões</h3>
+    <p style="font-size: 0.875rem; color: rgba(0,30,39,.6); margin-bottom: 1.5rem;">
+      Todos os CTAs usam <code>box-shadow</code> no hover para criar efeito de elevação. Transição: <code>all .2s linear</code>.
+    </p>
+    <div class="ds-flex-row">
+      <div class="ds-state-card">
+        <a class="cta blue-cta" href="#" style="pointer-events: none;">Default</a>
+        <div class="ds-state-label">Repouso</div>
+      </div>
+      <div class="ds-state-card">
+        <a class="cta blue-cta" href="#" style="box-shadow: 0px 6px 0px 0px rgba(0,226,244,.6); pointer-events: none;">Hover</a>
+        <div class="ds-state-label">:hover</div>
+      </div>
+    </div>
+    <div class="ds-flex-row" style="margin-top: 1rem;">
+      <div class="ds-state-card">
+        <a class="cta petroleo-cta" href="#" style="pointer-events: none;">Default</a>
+        <div class="ds-state-label">Repouso</div>
+      </div>
+      <div class="ds-state-card">
+        <a class="cta petroleo-cta" href="#" style="box-shadow: 0px 6px 0px 0px rgba(0,30,39,.4); pointer-events: none;">Hover</a>
+        <div class="ds-state-label">:hover</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="ds-divider">
+
+  <div class="ds-component-group">
+    <h3>Hover States — Cards</h3>
+    <p style="font-size: 0.875rem; color: rgba(0,30,39,.6); margin-bottom: 1.5rem;">
+      Cards de benefício escalam com <code>transform: scale(1.15)</code> no hover. Cards hover ganham shadow elevada.
+    </p>
+    <div class="ds-flex-row">
+      <div class="ds-state-card">
+        <div style="background: #f7f7f7; border-radius: 8px; padding: 1.5rem; width: 150px; height: 120px; transition: .2s;">
+          <strong style="font-size: .875rem;">Card</strong>
+        </div>
+        <div class="ds-state-label">Default</div>
+      </div>
+      <div class="ds-state-card">
+        <div style="background: #f7f7f7; border-radius: 8px; padding: 1.5rem; width: 150px; height: 120px; transform: scale(1.15); box-shadow: 0px 6px 6px 0px rgba(0,30,39,.1), 0px 16px 24px rgba(0,30,39,.15);">
+          <strong style="font-size: .875rem;">Card</strong>
+        </div>
+        <div class="ds-state-label">:hover</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     6) ICONS
+═══════════════════════════════════════════ -->
+<section id="icons" class="ds-section">
+  <h2 class="ds-title">Ícones</h2>
+  <p class="ds-desc">SVGs inline utilizados no site. Sistema iconográfico sem biblioteca externa — ícones embedados diretamente no HTML.</p>
+
+  <div class="ds-icon-grid">
+    <div class="ds-icon-item">
+      <svg viewBox="0 0 32 32" style="fill: #001e27;">
+        <path d="M19.11 17.205c-.372 0-1.088 1.39-1.518 1.39a.63.63 0 0 1-.315-.1c-.802-.402-1.504-.817-2.163-1.447-.545-.516-1.146-1.29-1.46-1.963a.426.426 0 0 1-.073-.215c0-.33.99-.945.99-1.49 0-.143-.73-2.09-.832-2.335-.143-.372-.214-.487-.6-.487-.187 0-.36-.043-.53-.043-.302 0-.53.115-.746.315-.688.645-1.032 1.318-1.06 2.264v.114c-.015.99.472 1.977 1.017 2.78 1.23 1.82 2.506 3.41 4.554 4.34.616.287 2.035.888 2.722.888.817 0 2.15-.515 2.478-1.318.13-.33.244-.73.244-1.088 0-.058 0-.144-.03-.215-.1-.172-2.434-1.39-2.678-1.39zm-2.908 7.593c-1.747 0-3.48-.53-4.942-1.49L7.793 24.41l1.132-3.337a8.955 8.955 0 0 1-1.72-5.272c0-4.955 4.04-8.995 8.997-8.995S25.2 10.845 25.2 15.8c0 4.958-4.04 8.998-8.998 8.998zm0-19.798c-5.96 0-10.8 4.842-10.8 10.8 0 1.964.53 3.898 1.546 5.574L5 27.176l5.974-1.92a10.807 10.807 0 0 0 16.03-9.455c0-5.958-4.842-10.8-10.802-10.8z" fill-rule="evenodd"/>
+      </svg>
+      <span>WhatsApp</span>
+    </div>
+
+    <div class="ds-icon-item">
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 16 16" style="fill: #001e27;">
+        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+      </svg>
+      <span>Close (bi-x)</span>
+    </div>
+
+    <div class="ds-icon-item">
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#001e27" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <span>Search</span>
+    </div>
+
+    <div class="ds-icon-item">
+      <div style="display: flex; flex-direction: column; gap: 5px; width: 32px;">
+        <div style="background: #001e27; height: 4px; border-radius: 10px;"></div>
+        <div style="background: #001e27; height: 4px; border-radius: 10px;"></div>
+        <div style="background: #001e27; height: 4px; border-radius: 10px;"></div>
+      </div>
+      <span>Hamburger</span>
+    </div>
+
+    <div class="ds-icon-item">
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 16 16" fill="#001e27">
+        <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+      </svg>
+      <span>Chevron Down</span>
+    </div>
+
+    <div class="ds-icon-item">
+      <div style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">
+        <div style="width: 15px; height: 15px; background: #001e27; border-radius: 50%;"></div>
+      </div>
+      <span>Dot (Carousel)</span>
+    </div>
+  </div>
+
+  <hr class="ds-divider">
+
+  <h3 style="font-weight: 700; margin-bottom: 1rem;">Tamanhos de Ícones</h3>
+  <div class="ds-flex-row" style="gap: 2rem; align-items: flex-end;">
+    <div style="text-align: center;">
+      <svg viewBox="0 0 32 32" style="width: 16px; height: 16px; fill: #001e27;">
+        <path d="M19.11 17.205c-.372 0-1.088 1.39-1.518 1.39a.63.63 0 0 1-.315-.1c-.802-.402-1.504-.817-2.163-1.447-.545-.516-1.146-1.29-1.46-1.963a.426.426 0 0 1-.073-.215c0-.33.99-.945.99-1.49 0-.143-.73-2.09-.832-2.335-.143-.372-.214-.487-.6-.487-.187 0-.36-.043-.53-.043-.302 0-.53.115-.746.315-.688.645-1.032 1.318-1.06 2.264v.114c-.015.99.472 1.977 1.017 2.78 1.23 1.82 2.506 3.41 4.554 4.34.616.287 2.035.888 2.722.888.817 0 2.15-.515 2.478-1.318.13-.33.244-.73.244-1.088 0-.058 0-.144-.03-.215-.1-.172-2.434-1.39-2.678-1.39zm-2.908 7.593c-1.747 0-3.48-.53-4.942-1.49L7.793 24.41l1.132-3.337a8.955 8.955 0 0 1-1.72-5.272c0-4.955 4.04-8.995 8.997-8.995S25.2 10.845 25.2 15.8c0 4.958-4.04 8.998-8.998 8.998zm0-19.798c-5.96 0-10.8 4.842-10.8 10.8 0 1.964.53 3.898 1.546 5.574L5 27.176l5.974-1.92a10.807 10.807 0 0 0 16.03-9.455c0-5.958-4.842-10.8-10.802-10.8z" fill-rule="evenodd"/>
+      </svg>
+      <div style="font-size: .6875rem; color: rgba(0,30,39,.5); margin-top: .5rem;">16px</div>
+    </div>
+    <div style="text-align: center;">
+      <svg viewBox="0 0 32 32" style="width: 24px; height: 24px; fill: #001e27;">
+        <path d="M19.11 17.205c-.372 0-1.088 1.39-1.518 1.39a.63.63 0 0 1-.315-.1c-.802-.402-1.504-.817-2.163-1.447-.545-.516-1.146-1.29-1.46-1.963a.426.426 0 0 1-.073-.215c0-.33.99-.945.99-1.49 0-.143-.73-2.09-.832-2.335-.143-.372-.214-.487-.6-.487-.187 0-.36-.043-.53-.043-.302 0-.53.115-.746.315-.688.645-1.032 1.318-1.06 2.264v.114c-.015.99.472 1.977 1.017 2.78 1.23 1.82 2.506 3.41 4.554 4.34.616.287 2.035.888 2.722.888.817 0 2.15-.515 2.478-1.318.13-.33.244-.73.244-1.088 0-.058 0-.144-.03-.215-.1-.172-2.434-1.39-2.678-1.39zm-2.908 7.593c-1.747 0-3.48-.53-4.942-1.49L7.793 24.41l1.132-3.337a8.955 8.955 0 0 1-1.72-5.272c0-4.955 4.04-8.995 8.997-8.995S25.2 10.845 25.2 15.8c0 4.958-4.04 8.998-8.998 8.998zm0-19.798c-5.96 0-10.8 4.842-10.8 10.8 0 1.964.53 3.898 1.546 5.574L5 27.176l5.974-1.92a10.807 10.807 0 0 0 16.03-9.455c0-5.958-4.842-10.8-10.802-10.8z" fill-rule="evenodd"/>
+      </svg>
+      <div style="font-size: .6875rem; color: rgba(0,30,39,.5); margin-top: .5rem;">24px</div>
+    </div>
+    <div style="text-align: center;">
+      <svg viewBox="0 0 32 32" style="width: 32px; height: 32px; fill: #001e27;">
+        <path d="M19.11 17.205c-.372 0-1.088 1.39-1.518 1.39a.63.63 0 0 1-.315-.1c-.802-.402-1.504-.817-2.163-1.447-.545-.516-1.146-1.29-1.46-1.963a.426.426 0 0 1-.073-.215c0-.33.99-.945.99-1.49 0-.143-.73-2.09-.832-2.335-.143-.372-.214-.487-.6-.487-.187 0-.36-.043-.53-.043-.302 0-.53.115-.746.315-.688.645-1.032 1.318-1.06 2.264v.114c-.015.99.472 1.977 1.017 2.78 1.23 1.82 2.506 3.41 4.554 4.34.616.287 2.035.888 2.722.888.817 0 2.15-.515 2.478-1.318.13-.33.244-.73.244-1.088 0-.058 0-.144-.03-.215-.1-.172-2.434-1.39-2.678-1.39zm-2.908 7.593c-1.747 0-3.48-.53-4.942-1.49L7.793 24.41l1.132-3.337a8.955 8.955 0 0 1-1.72-5.272c0-4.955 4.04-8.995 8.997-8.995S25.2 10.845 25.2 15.8c0 4.958-4.04 8.998-8.998 8.998zm0-19.798c-5.96 0-10.8 4.842-10.8 10.8 0 1.964.53 3.898 1.546 5.574L5 27.176l5.974-1.92a10.807 10.807 0 0 0 16.03-9.455c0-5.958-4.842-10.8-10.802-10.8z" fill-rule="evenodd"/>
+      </svg>
+      <div style="font-size: .6875rem; color: rgba(0,30,39,.5); margin-top: .5rem;">32px</div>
+    </div>
+    <div style="text-align: center;">
+      <svg viewBox="0 0 32 32" style="width: 48px; height: 48px; fill: #001e27;">
+        <path d="M19.11 17.205c-.372 0-1.088 1.39-1.518 1.39a.63.63 0 0 1-.315-.1c-.802-.402-1.504-.817-2.163-1.447-.545-.516-1.146-1.29-1.46-1.963a.426.426 0 0 1-.073-.215c0-.33.99-.945.99-1.49 0-.143-.73-2.09-.832-2.335-.143-.372-.214-.487-.6-.487-.187 0-.36-.043-.53-.043-.302 0-.53.115-.746.315-.688.645-1.032 1.318-1.06 2.264v.114c-.015.99.472 1.977 1.017 2.78 1.23 1.82 2.506 3.41 4.554 4.34.616.287 2.035.888 2.722.888.817 0 2.15-.515 2.478-1.318.13-.33.244-.73.244-1.088 0-.058 0-.144-.03-.215-.1-.172-2.434-1.39-2.678-1.39zm-2.908 7.593c-1.747 0-3.48-.53-4.942-1.49L7.793 24.41l1.132-3.337a8.955 8.955 0 0 1-1.72-5.272c0-4.955 4.04-8.995 8.997-8.995S25.2 10.845 25.2 15.8c0 4.958-4.04 8.998-8.998 8.998zm0-19.798c-5.96 0-10.8 4.842-10.8 10.8 0 1.964.53 3.898 1.546 5.574L5 27.176l5.974-1.92a10.807 10.807 0 0 0 16.03-9.455c0-5.958-4.842-10.8-10.802-10.8z" fill-rule="evenodd"/>
+      </svg>
+      <div style="font-size: .6875rem; color: rgba(0,30,39,.5); margin-top: .5rem;">48px</div>
+    </div>
+  </div>
+
+  <hr class="ds-divider">
+
+  <h3 style="font-weight: 700; margin-bottom: 1rem;">Herança de Cor</h3>
+  <div class="ds-flex-row" style="gap: 2rem;">
+    <div style="text-align: center;">
+      <svg viewBox="0 0 32 32" style="width: 32px; height: 32px; fill: #001e27;">
+        <path d="M19.11 17.205c-.372 0-1.088 1.39-1.518 1.39a.63.63 0 0 1-.315-.1c-.802-.402-1.504-.817-2.163-1.447-.545-.516-1.146-1.29-1.46-1.963a.426.426 0 0 1-.073-.215c0-.33.99-.945.99-1.49 0-.143-.73-2.09-.832-2.335-.143-.372-.214-.487-.6-.487-.187 0-.36-.043-.53-.043-.302 0-.53.115-.746.315-.688.645-1.032 1.318-1.06 2.264v.114c-.015.99.472 1.977 1.017 2.78 1.23 1.82 2.506 3.41 4.554 4.34.616.287 2.035.888 2.722.888.817 0 2.15-.515 2.478-1.318.13-.33.244-.73.244-1.088 0-.058 0-.144-.03-.215-.1-.172-2.434-1.39-2.678-1.39zm-2.908 7.593c-1.747 0-3.48-.53-4.942-1.49L7.793 24.41l1.132-3.337a8.955 8.955 0 0 1-1.72-5.272c0-4.955 4.04-8.995 8.997-8.995S25.2 10.845 25.2 15.8c0 4.958-4.04 8.998-8.998 8.998zm0-19.798c-5.96 0-10.8 4.842-10.8 10.8 0 1.964.53 3.898 1.546 5.574L5 27.176l5.974-1.92a10.807 10.807 0 0 0 16.03-9.455c0-5.958-4.842-10.8-10.802-10.8z" fill-rule="evenodd"/>
+      </svg>
+      <div style="font-size: .6875rem; color: rgba(0,30,39,.5); margin-top: .5rem;">Petróleo</div>
+    </div>
+    <div style="text-align: center;">
+      <svg viewBox="0 0 32 32" style="width: 32px; height: 32px; fill: #00e2f4;">
+        <path d="M19.11 17.205c-.372 0-1.088 1.39-1.518 1.39a.63.63 0 0 1-.315-.1c-.802-.402-1.504-.817-2.163-1.447-.545-.516-1.146-1.29-1.46-1.963a.426.426 0 0 1-.073-.215c0-.33.99-.945.99-1.49 0-.143-.73-2.09-.832-2.335-.143-.372-.214-.487-.6-.487-.187 0-.36-.043-.53-.043-.302 0-.53.115-.746.315-.688.645-1.032 1.318-1.06 2.264v.114c-.015.99.472 1.977 1.017 2.78 1.23 1.82 2.506 3.41 4.554 4.34.616.287 2.035.888 2.722.888.817 0 2.15-.515 2.478-1.318.13-.33.244-.73.244-1.088 0-.058 0-.144-.03-.215-.1-.172-2.434-1.39-2.678-1.39zm-2.908 7.593c-1.747 0-3.48-.53-4.942-1.49L7.793 24.41l1.132-3.337a8.955 8.955 0 0 1-1.72-5.272c0-4.955 4.04-8.995 8.997-8.995S25.2 10.845 25.2 15.8c0 4.958-4.04 8.998-8.998 8.998zm0-19.798c-5.96 0-10.8 4.842-10.8 10.8 0 1.964.53 3.898 1.546 5.574L5 27.176l5.974-1.92a10.807 10.807 0 0 0 16.03-9.455c0-5.958-4.842-10.8-10.802-10.8z" fill-rule="evenodd"/>
+      </svg>
+      <div style="font-size: .6875rem; color: rgba(0,30,39,.5); margin-top: .5rem;">Azul</div>
+    </div>
+    <div style="text-align: center;">
+      <svg viewBox="0 0 32 32" style="width: 32px; height: 32px; fill: #fff;">
+        <path d="M19.11 17.205c-.372 0-1.088 1.39-1.518 1.39a.63.63 0 0 1-.315-.1c-.802-.402-1.504-.817-2.163-1.447-.545-.516-1.146-1.29-1.46-1.963a.426.426 0 0 1-.073-.215c0-.33.99-.945.99-1.49 0-.143-.73-2.09-.832-2.335-.143-.372-.214-.487-.6-.487-.187 0-.36-.043-.53-.043-.302 0-.53.115-.746.315-.688.645-1.032 1.318-1.06 2.264v.114c-.015.99.472 1.977 1.017 2.78 1.23 1.82 2.506 3.41 4.554 4.34.616.287 2.035.888 2.722.888.817 0 2.15-.515 2.478-1.318.13-.33.244-.73.244-1.088 0-.058 0-.144-.03-.215-.1-.172-2.434-1.39-2.678-1.39zm-2.908 7.593c-1.747 0-3.48-.53-4.942-1.49L7.793 24.41l1.132-3.337a8.955 8.955 0 0 1-1.72-5.272c0-4.955 4.04-8.995 8.997-8.995S25.2 10.845 25.2 15.8c0 4.958-4.04 8.998-8.998 8.998zm0-19.798c-5.96 0-10.8 4.842-10.8 10.8 0 1.964.53 3.898 1.546 5.574L5 27.176l5.974-1.92a10.807 10.807 0 0 0 16.03-9.455c0-5.958-4.842-10.8-10.802-10.8z" fill-rule="evenodd"/>
+      </svg>
+      <div style="font-size: .6875rem; color: rgba(0,30,39,.5); margin-top: .5rem;">White (dark bg)</div>
+    </div>
+    <div style="text-align: center;">
+      <svg viewBox="0 0 32 32" style="width: 32px; height: 32px; fill: #00a027;">
+        <path d="M19.11 17.205c-.372 0-1.088 1.39-1.518 1.39a.63.63 0 0 1-.315-.1c-.802-.402-1.504-.817-2.163-1.447-.545-.516-1.146-1.29-1.46-1.963a.426.426 0 0 1-.073-.215c0-.33.99-.945.99-1.49 0-.143-.73-2.09-.832-2.335-.143-.372-.214-.487-.6-.487-.187 0-.36-.043-.53-.043-.302 0-.53.115-.746.315-.688.645-1.032 1.318-1.06 2.264v.114c-.015.99.472 1.977 1.017 2.78 1.23 1.82 2.506 3.41 4.554 4.34.616.287 2.035.888 2.722.888.817 0 2.15-.515 2.478-1.318.13-.33.244-.73.244-1.088 0-.058 0-.144-.03-.215-.1-.172-2.434-1.39-2.678-1.39zm-2.908 7.593c-1.747 0-3.48-.53-4.942-1.49L7.793 24.41l1.132-3.337a8.955 8.955 0 0 1-1.72-5.272c0-4.955 4.04-8.995 8.997-8.995S25.2 10.845 25.2 15.8c0 4.958-4.04 8.998-8.998 8.998zm0-19.798c-5.96 0-10.8 4.842-10.8 10.8 0 1.964.53 3.898 1.546 5.574L5 27.176l5.974-1.92a10.807 10.807 0 0 0 16.03-9.455c0-5.958-4.842-10.8-10.802-10.8z" fill-rule="evenodd"/>
+      </svg>
+      <div style="font-size: .6875rem; color: rgba(0,30,39,.5); margin-top: .5rem;">WPP Green</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════════ -->
+<footer class="bg-petroleo" style="padding: 3rem 2rem; margin-top: 2rem;">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-md-6">
+        <p style="color: #f7f7f7; font-size: .875rem; margin: 0;">
+          Omie Design System — Gerado a partir do site de referência
+        </p>
+      </div>
+      <div class="col-md-6 text-end">
+        <a href="#top" class="cta blue-cta" style="font-size: .8125rem;">Voltar ao topo</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="./Sistema de Gestão ERP Online - PMEs e grandes empresas _ Omie_files/jquery.min.js.download"></script>
+<script src="./Sistema de Gestão ERP Online - PMEs e grandes empresas _ Omie_files/bootstrap.bundle.min.js.download"></script>
+
+</body>
+</html>

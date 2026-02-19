@@ -1,0 +1,134 @@
+---
+alwaysApply: true
+---
+
+# Design System OMIE — LEI
+
+O arquivo `site/design-system.html` e a referencia obrigatoria para toda implementacao visual. Nenhum componente pode divergir dos tokens e padroes definidos nele.
+
+Ao implementar qualquer componente visual, **sempre consulte `site/design-system.html`** para validar cores, tipografia, espacamento, border-radius, hover states e animacoes.
+
+## Tipografia
+
+- **Familia**: Poppins (Google Fonts), pesos 100–900
+- **Cor base de texto**: `#001e27`
+
+| Token | Desktop | Mobile | Weight |
+|---|---|---|---|
+| H1 (Banner) | 2.5rem / 120% | 2rem / 120% | 700 |
+| H2 (Section) | 2rem / 120% | 1.5rem / 120% | 700 |
+| H3 (Card) | 1.406rem / 120% | 1rem / 150% | 700 |
+| Subtitle Banner | 1.125rem / 150% | — | 500, uppercase, letter-spacing 0.225rem |
+| Body Large | 1.125rem / 150% | — | 500 |
+| Body Regular | 1rem / 150% | — | 400 |
+| Body Small | 0.875rem / 150% | — | 400 |
+| Caption / Nav | 0.875rem / 150% | — | 500–600 |
+| Small | 0.75rem / 150% | — | 400–600 |
+
+### Estilos especiais
+
+- **Typewrite Highlight**: background `#d8fe00`, underline effect posicionado absolutamente
+- **Skew Highlight**: background `#00e2f4`, `skewX(160deg)`
+- **Texto Secundario**: `rgba(0,30,39,.6)`
+
+## Cores
+
+### Marca
+| Nome | Hex | Classe |
+|---|---|---|
+| Petroleo | `#001e27` | `.bg-petroleo` |
+| Azul Cyan | `#00e2f4` | `.bg-azul` |
+| Verde Lima | `#d8fe00` | `.bg-verde` |
+| Laranja | `#ff601f` | `.bg-laranja` |
+| Roxo | `#5e16ff` | `.bg-roxo` |
+| Azul GClick | `#a4f6fc` | `.bg-azul-gclick` |
+
+### Neutros e Fundos
+| Nome | Hex |
+|---|---|
+| White | `#ffffff` |
+| Cinza Claro | `#f7f7f7` |
+| Cinza Escuro | `#eceeee` |
+| Borda | `#dbdfde` |
+| Petroleo Claro | `#00353f` |
+| Blue Tint | `#F9FBFF` |
+
+### Texto
+| Nome | Valor |
+|---|---|
+| Principal | `#001e27` |
+| Secundario | `rgba(0,30,39,.6)` |
+| Blog Heading | `#131313` |
+| Blog Category | `#6EC1E4` |
+| Blog Meta | `#515151` |
+| Nav Dropdown Desc | `#677489` |
+
+### Gradientes
+- Card Banner: `linear-gradient(70deg, #cbcbd7 20%, #e4e4f0 70%)`
+- Campanha Section: `linear-gradient(90deg, #001F28 17.79%, #00475E 68.76%)`
+- Modal Overlay: `rgba(0,30,39,.95)`
+- Soft Azul: `rgba(0,226,244,.1)`
+- Soft Roxo: `rgba(85,81,247,.2)`
+- Hover Menu: `#e2fdff`
+
+## Border Radius
+
+| Token | Valor | Uso |
+|---|---|---|
+| `rounded-card` | 8px | Cards padrao |
+| `rounded-card-hover` | 12px | Cards com hover |
+| `rounded-card-plano` | 16px | Cards de plano |
+| `rounded-card-ravena` | 1rem | Cards ravena |
+| `rounded-btn` | 40px | Botoes CTA |
+| `rounded-full` | 50% | Circle / FAB |
+
+## Botoes CTA
+
+- `border-radius: 40px`
+- `padding: .625rem 1.5rem`
+- `font-weight: 700`
+- `transition: all .2s linear`
+- Hover: `box-shadow` para efeito de elevacao
+
+### Variantes
+- **Blue CTA**: bg `#00e2f4`, color `#001e27`, hover shadow `rgba(0,226,244,.6)`
+- **Green CTA**: bg `#d8fe00`, color `#001e27`
+- **Laranja CTA**: bg `#ff601f`, color `#fff`
+- **Petroleo CTA**: bg `#001e27`, color `#fff`, hover shadow `rgba(0,30,39,.4)`
+- **White CTA**: bg `#fff`, color `#001e27`
+- **Transparent CTA**: bg transparente, border `2px solid`
+
+## Layout e Espacamento
+
+- **Grid**: Bootstrap 5 (container, row, col-*) — no Tailwind, usar equivalentes (`container`, `grid`, `grid-cols-*`)
+- **Max-width container**: 1320px
+- **Section padding**: 4rem (mobile) → 5rem (desktop 1024px+) → 6rem (wide 1366px+)
+- **Hero split**: col-lg-7 (texto) + col-lg-5 (visual)
+- **Blog grid**: 3 colunas desktop, 2 tablet, 1 mobile
+
+## Motion e Interacao
+
+- **Card hover**: `transform: scale(1.15)` + `box-shadow: 0px 6px 6px 0px rgba(0,30,39,.1), 0px 16px 24px rgba(0,30,39,.15)`
+- **Button hover**: `box-shadow: 0px 6px 0px 0px <cor-com-opacidade>`
+- **Transicoes globais**: `all .2s linear`
+- **Animacoes**: pulse (FAB), showUp (nav sticky), spinner (loading), animaDropLeft (dropdown)
+
+## Componentes de Referencia
+
+- **Search (Blog)**: input bg petroleo + btn verde lima, border-radius 20px
+- **Accordion (FAQ)**: Bootstrap accordion padrao com estilos OMIE
+- **Blog Card**: imagem + categoria (border-left 3px `#6EC1E4`) + data + titulo
+- **Card Beneficio**: icone SVG + titulo + descricao, hover scale
+- **Card Carousel Banner**: bg cinza, border 1px `#dbdfde`, border-radius 8px
+
+## Icones
+
+- SVGs inline (sem biblioteca externa)
+- Tamanhos: 16px, 24px, 32px, 48px
+- Cor herda do contexto (fill: currentColor ou explicito)
+
+## Padroes Detalhados
+
+Para guidelines de como aplicar estes tokens no codigo:
+- `docs/CODING-PATTERNS.md` — component composition com Tailwind usando tokens do DS
+- `docs/IMPLEMENTATION-CHECKLIST.md` — checklist de verificacao do Design System (secao "Verificacao do Design System")

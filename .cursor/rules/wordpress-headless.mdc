@@ -1,0 +1,94 @@
+---
+description: WordPress headless CMS integration patterns
+globs:
+  - front/**
+alwaysApply: false
+---
+
+# WordPress Headless — Padroes de Integracao
+
+## Principio Fundamental
+
+WordPress e usado **exclusivamente como CMS** para gerenciar conteudo (paginas, blog posts, categorias, menus). Ele **nunca renderiza** o frontend. Todo o frontend e Next.js.
+
+## Anti-Corruption Layer (Obrigatoria)
+
+Toda comunicacao com WordPress DEVE passar pela camada em `lib/wordpress/`. Componentes React **nunca** acessam a API do WordPress diretamente.
+
+```
+lib/wordpress/
+  client.ts          # Funcoes publicas (getPosts, getPage, getMenus)
+  types.ts           # Interfaces TypeScript (Post, Page, Category, Menu)
+  queries/           # Queries GraphQL isoladas (nao exportar para componentes)
+    posts.ts
+    pages.ts
+    menus.ts
+  transformers.ts    # Transforma dados brutos do WP em tipos limpos
+```
+
+### Regras da Anti-Corruption Layer
+
+- `client.ts` e o unico ponto de entrada — componentes so importam daqui
+- `queries/` contem detalhes de GraphQL/REST — **nunca** importado por componentes
+- `transformers.ts` converte a estrutura do WordPress em tipos proprios do projeto
+- `types.ts` define as interfaces do dominio (nao do WordPress)
+
+### Exemplo
+
+```tsx
+// lib/wordpress/client.ts
+import { fetchGraphQL } from './queries/posts'
+import { transformPost } from './transformers'
+import type { Post } from './types'
+
+export async function getPosts(limit = 10): Promise<Post[]> {
+  const rawPosts = await fetchGraphQL(limit)
+  return rawPosts.map(transformPost)
+}
+
+// app/blog/page.tsx (Server Component)
+import { getPosts } from '@/lib/wordpress/client'
+
+export default async function BlogPage() {
+  const posts = await getPosts()
+  // ...
+}
+
+// PROIBIDO em componentes:
+// import { POSTS_QUERY } from '@/lib/wordpress/queries/posts'
+// import { gql } from 'graphql-request'
+```
+
+## Configuracao
+
+Variaveis de ambiente em `.env.local` (nunca hardcoded):
+
+```env
+WORDPRESS_API_URL=https://cms.omie.com.br/wp-json/wp/v2
+WORDPRESS_GRAPHQL_URL=https://cms.omie.com.br/graphql
+```
+
+## Tipos de Conteudo
+
+- **Posts**: blog articles com categorias e tags
+- **Pages**: paginas institucionais (sobre, contato, planos)
+- **Categories**: categorias do blog
+- **Menus**: navegacao do site (header, footer)
+- **Media**: imagens e arquivos via WordPress Media Library
+
+## Resilience
+
+- Timeout em todas as chamadas ao WordPress (ex: 10s)
+- Fallback gracioso se WordPress estiver indisponivel (cached content, mensagem amigavel)
+- Nunca deixar uma falha do WordPress quebrar toda a pagina
+
+## Preview Mode
+
+- Implementar Next.js Draft Mode para editores previsualizarem conteudo nao publicado
+- Rota de API `/api/preview` para ativar draft mode com token de seguranca
+
+## Padroes Detalhados
+
+Para guidelines completas, consulte:
+- `docs/INTEGRATION-PATTERNS.md` — anti-corruption layer, mock clients, resilience, cache/ISR, preview mode
+- `docs/CODING-PATTERNS.md` — CMS API leakage prevention, data fetching patterns, lean page components
