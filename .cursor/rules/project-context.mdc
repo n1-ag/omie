@@ -8,13 +8,13 @@ alwaysApply: true
 
 - **Frontend**: Next.js 16 (App Router) + React 19 + TypeScript 5 (strict)
 - **Styling**: Tailwind CSS v4 (tokens mapeados do Design System OMIE)
-- **CMS**: WordPress headless (WPGraphQL / REST API v2) — somente gestao de conteudo, sem renderizacao
+- **CMS**: Strapi headless (REST API / GraphQL opcional) — somente gestao de conteudo, sem renderizacao
 - **Linguagem de conteudo**: Portugues do Brasil
 - **Linguagem de codigo**: Ingles (variaveis, funcoes, componentes, commits)
 
 ## Objetivo
 
-Migrar o site e blog da OMIE de um WordPress renderizado (`/blog`) para uma arquitetura headless por requisitos de seguranca. O WordPress passa a ser apenas CMS; o frontend e inteiramente Next.js.
+O site e blog da OMIE utilizam arquitetura headless: Strapi como CMS (gestao de conteudo) e Next.js como frontend. O Strapi nao renderiza o site; o frontend e inteiramente Next.js.
 
 ## Estrutura do Projeto
 
@@ -23,7 +23,7 @@ omie-new/
   front/             # Next.js 16 (App Router) — todo o codigo frontend
     app/             # Pages e layouts (App Router)
     lib/             # Services, clients, utils (logica de negocio)
-      wordpress/     # Anti-corruption layer para WordPress API
+      strapi/        # Anti-corruption layer para Strapi API
     public/          # Assets estaticos
   site/              # Referencias visuais do site atual
     design-system.html  # Design System (LEI para implementacao visual)
@@ -45,5 +45,5 @@ npm run start  # Serve build de producao
 Para padroes detalhados, consulte os documentos em `docs/`:
 - `docs/ARCHITECTURE-OVERVIEW.md` — visao geral e decisoes arquiteturais
 - `docs/CODING-PATTERNS.md` — padroes de codigo (lean components, separacao de responsabilidades)
-- `docs/INTEGRATION-PATTERNS.md` — anti-corruption layer, integracoes com WordPress e APIs externas
+- `docs/INTEGRATION-PATTERNS.md` — anti-corruption layer, integracoes com Strapi e APIs externas
 - `docs/IMPLEMENTATION-CHECKLIST.md` — checklists por tipo de tarefa

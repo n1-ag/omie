@@ -1,0 +1,96 @@
+---
+description: Strapi headless CMS integration patterns
+globs:
+  - front/**
+alwaysApply: false
+---
+
+# Strapi Headless — Padroes de Integracao
+
+## Principio Fundamental
+
+Strapi e usado **exclusivamente como CMS** para gerenciar conteudo (paginas, blog posts, categorias, menus). Ele **nunca renderiza** o frontend. Todo o frontend e Next.js.
+
+## Anti-Corruption Layer (Obrigatoria)
+
+Toda comunicacao com Strapi DEVE passar pela camada em `lib/strapi/`. Componentes React **nunca** acessam a API do Strapi diretamente.
+
+```
+lib/strapi/
+  client.ts          # Funcoes publicas (getPosts, getPage, getMenus)
+  types.ts           # Interfaces TypeScript (Post, Page, Category, Menu)
+  api/               # Chamadas REST (ou GraphQL) isoladas — nao exportar para componentes
+    posts.ts
+    pages.ts
+    menus.ts
+  transformers.ts    # Transforma dados brutos do Strapi em tipos limpos
+```
+
+### Regras da Anti-Corruption Layer
+
+- `client.ts` e o unico ponto de entrada — componentes so importam daqui
+- `api/` contem detalhes de REST/GraphQL — **nunca** importado por componentes
+- `transformers.ts` converte a estrutura do Strapi em tipos proprios do projeto
+- `types.ts` define as interfaces do dominio (nao do Strapi)
+
+### Exemplo
+
+```tsx
+// lib/strapi/client.ts
+import { fetchPostsFromStrapi } from './api/posts'
+import { transformPost } from './transformers'
+import type { Post } from './types'
+
+export async function getPosts(limit = 10): Promise<Post[]> {
+  const rawPosts = await fetchPostsFromStrapi(limit)
+  return rawPosts.map(transformPost)
+}
+
+// app/blog/page.tsx (Server Component)
+import { getPosts } from '@/lib/strapi/client'
+
+export default async function BlogPage() {
+  const posts = await getPosts()
+  // ...
+}
+
+// PROIBIDO em componentes:
+// import { fetchPostsFromStrapi } from '@/lib/strapi/api/posts'
+// fetch(process.env.STRAPI_API_URL + '/api/posts')
+```
+
+## Configuracao
+
+Variaveis de ambiente em `.env.local` (nunca hardcoded):
+
+```env
+STRAPI_API_URL=https://cms.omie.com.br
+STRAPI_API_TOKEN=token-seguro-aqui
+STRAPI_PREVIEW_SECRET=token-preview-aqui
+STRAPI_MOCK=true   # desenvolvimento sem Strapi rodando
+```
+
+## Tipos de Conteudo
+
+- **Posts**: artigos do blog com categorias e autor
+- **Pages**: paginas institucionais (sobre, contato, planos)
+- **Categories**: categorias do blog
+- **Menus**: navegacao do site (header, footer)
+- **Media**: imagens e arquivos via Strapi Media Library
+
+## Resilience
+
+- Timeout em todas as chamadas ao Strapi (ex: 10s com `AbortSignal.timeout(10000)`)
+- Fallback gracioso se Strapi estiver indisponivel (conteudo em cache, mensagem amigavel)
+- Nunca deixar uma falha do Strapi quebrar toda a pagina
+
+## Preview Mode
+
+- Implementar Next.js Draft Mode para editores previsualizarem conteudo nao publicado
+- Rota de API `/api/preview` para ativar draft mode com token de seguranca (`STRAPI_PREVIEW_SECRET`)
+
+## Padroes Detalhados
+
+Para guidelines completas, consulte:
+- `docs/INTEGRATION-PATTERNS.md` — anti-corruption layer, mock clients, resilience, cache/ISR, preview mode
+- `docs/CODING-PATTERNS.md` — CMS API leakage prevention, data fetching patterns, lean page components

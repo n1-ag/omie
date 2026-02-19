@@ -15,13 +15,13 @@ alwaysApply: false
 
 ## Data Fetching
 
-- Buscar dados exclusivamente via anti-corruption layer (`lib/wordpress/client.ts`)
-- Componentes **nunca** importam queries GraphQL ou chamam fetch diretamente para a API do WordPress
+- Buscar dados exclusivamente via anti-corruption layer (`lib/strapi/client.ts`)
+- Componentes **nunca** importam de `lib/strapi/api/*` ou chamam fetch diretamente para a API do Strapi
 - Usar `async` Server Components para data fetching:
 
 ```tsx
 // page.tsx (Server Component)
-import { getPosts } from '@/lib/wordpress/client'
+import { getPosts } from '@/lib/strapi/client'
 
 export default async function BlogPage() {
   const posts = await getPosts()
@@ -39,7 +39,7 @@ export default async function BlogPage() {
 
 - Strict mode habilitado
 - Todas as props de componentes tipadas com interfaces
-- Tipos do WordPress centralizados em `lib/wordpress/types.ts`
+- Tipos do Strapi centralizados em `lib/strapi/types.ts`
 - Nunca usar `any` — preferir `unknown` quando necessario e fazer type narrowing
 
 ## Tailwind CSS v4
@@ -51,13 +51,13 @@ export default async function BlogPage() {
 ## Imagens
 
 - Sempre usar `next/image` para imagens
-- Configurar dominios do WordPress em `next.config.ts`:
+- Configurar dominios do Strapi (e CDN de midia) em `next.config.ts`:
 
 ```ts
 images: {
   remotePatterns: [
     { protocol: 'https', hostname: '**.omie.com.br' },
-    { protocol: 'https', hostname: '**.wordpress.com' },
+    { protocol: 'https', hostname: 'cms.omie.com.br' }, // Strapi uploads
   ],
 }
 ```
@@ -66,7 +66,7 @@ images: {
 
 - Usar Metadata API do Next.js (`export const metadata` ou `generateMetadata`)
 - Cada pagina deve ter title, description, og:image
-- Blog posts: metadata dinamico via `generateMetadata` com dados do WordPress
+- Blog posts: metadata dinamico via `generateMetadata` com dados do Strapi
 
 ## Estrutura de Pastas
 
@@ -83,7 +83,7 @@ front/
       layout/            # Header, Footer, Navigation
       blog/              # Componentes especificos de blog
   lib/
-    wordpress/           # Anti-corruption layer (ver rule wordpress-headless)
+    strapi/              # Anti-corruption layer (ver rule strapi-headless)
     utils/               # Funcoes utilitarias
   public/                # Assets estaticos
 ```
@@ -102,5 +102,5 @@ front/
 Para guidelines completas, consulte:
 - `docs/ARCHITECTURE-OVERVIEW.md` — visao geral, decisoes arquiteturais, decision tree
 - `docs/CODING-PATTERNS.md` — lean components, separacao de responsabilidades
-- `docs/INTEGRATION-PATTERNS.md` — anti-corruption layer, WordPress integration
+- `docs/INTEGRATION-PATTERNS.md` — anti-corruption layer, Strapi integration
 - `docs/IMPLEMENTATION-CHECKLIST.md` — checklists por tipo de tarefa
