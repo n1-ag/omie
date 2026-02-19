@@ -19,33 +19,33 @@ Hub de navegacao e visao geral da arquitetura do site OMIE.
 
 ## Visao Geral
 
-O site OMIE utiliza WordPress como **headless CMS** e Next.js como **frontend**. O WordPress gerencia conteudo (paginas, blog, menus); o Next.js renderiza tudo para o usuario final.
+O site OMIE utiliza **Strapi** como **headless CMS** e Next.js como **frontend**. O Strapi gerencia conteudo (paginas, blog, menus); o Next.js renderiza tudo para o usuario final.
 
 ```
-[Editor OMIE] → [WordPress CMS + WPGraphQL] → [API GraphQL/REST]
-                                                       ↓
-                                        [Anti-Corruption Layer]
-                                          (lib/wordpress/)
-                                                       ↓
-                                     [Next.js 16 (App Router)]
-                                        Server Components
-                                        Client Components
-                                        Tailwind CSS v4
-                                                       ↓
-                                          [CDN / Deploy]
-                                                       ↓
-                                         [Usuario Final]
+[Editor OMIE] → [Strapi CMS] → [REST API / GraphQL]
+                                       ↓
+                        [Anti-Corruption Layer]
+                            (lib/strapi/)
+                                       ↓
+                     [Next.js 16 (App Router)]
+                        Server Components
+                        Client Components
+                        Tailwind CSS v4
+                                       ↓
+                          [CDN / Deploy]
+                                       ↓
+                         [Usuario Final]
 ```
 
 ## Decisoes Arquiteturais
 
-### Por que WordPress Headless?
+### Por que Strapi Headless?
 
-A OMIE atualmente roda o blog em `/blog` com WordPress renderizando o frontend. Isso nao atende requisitos de seguranca. Com headless:
-- WordPress fica isolado da internet publica (acessivel apenas via API)
-- Superficie de ataque reduzida drasticamente
+O site OMIE utiliza um CMS headless para gestao de conteudo com seguranca e flexibilidade. Com Strapi:
+- Strapi fica isolado da internet publica (acessivel apenas via API)
+- Superficie de ataque reduzida; API REST/GraphQL documentada e controlada
 - Performance controlada pelo Next.js (SSG, ISR, CDN)
-- Editores continuam usando o WordPress que ja conhecem
+- Editores usam o painel Strapi (moderno, type-safe com content-types)
 
 ### Por que Next.js 16?
 
@@ -67,10 +67,10 @@ Os **tokens** (cores, tipografia, espacamento, border-radius) sao extraidos do D
 
 ### Anti-Corruption Layer
 
-Toda comunicacao com WordPress passa por `lib/wordpress/`. Componentes React nunca acessam a API diretamente. Isso garante:
-- **Desacoplamento**: trocar WordPress por Strapi ou Contentful requer mudar apenas `lib/wordpress/`
+Toda comunicacao com Strapi passa por `lib/strapi/`. Componentes React nunca acessam a API diretamente. Isso garante:
+- **Desacoplamento**: trocar Strapi por outro CMS requer mudar apenas `lib/strapi/`
 - **Tipagem segura**: dados transformados em tipos proprios do projeto
-- **Testabilidade**: mock client para desenvolvimento sem WordPress
+- **Testabilidade**: mock client para desenvolvimento sem Strapi
 - **Resilience**: fallbacks centralizados quando a API falha
 
 Ver detalhes em [INTEGRATION-PATTERNS.md](./INTEGRATION-PATTERNS.md).
@@ -82,7 +82,7 @@ Ver detalhes em [INTEGRATION-PATTERNS.md](./INTEGRATION-PATTERNS.md).
 | **Pages** | Routing, SEO metadata, layout composition | `front/app/` |
 | **Components** | UI reutilizavel, apresentacao visual | `front/app/components/` |
 | **Services** | Logica de negocio, transformacao de dados | `front/lib/` |
-| **WordPress Client** | Anti-corruption layer, comunicacao com CMS | `front/lib/wordpress/` |
+| **Strapi Client** | Anti-corruption layer, comunicacao com CMS | `front/lib/strapi/` |
 | **Design System** | Tokens visuais, referencia de componentes | `site/design-system.html` |
 
 ## Estrutura de Pastas
@@ -100,11 +100,11 @@ front/
 │       ├── layout/               # Header, Footer, Navigation
 │       └── blog/                 # PostCard, CategoryBadge, SearchBar...
 ├── lib/
-│   ├── wordpress/
+│   ├── strapi/
 │   │   ├── client.ts             # Funcoes publicas (getPosts, getPage...)
 │   │   ├── types.ts              # Post, Page, Category, Menu
-│   │   ├── queries/              # GraphQL queries (interno)
-│   │   └── transformers.ts       # WP data → tipos limpos
+│   │   ├── api/                  # Chamadas REST/GraphQL (interno)
+│   │   └── transformers.ts       # Dados Strapi → tipos limpos
 │   └── utils/                    # Helpers genericos
 ├── public/                       # Assets estaticos
 ├── next.config.ts
@@ -116,7 +116,7 @@ front/
 
 **IF** entendendo a arquitetura geral → voce esta aqui
 **IF** implementando componentes, pages, ou services → leia [CODING-PATTERNS.md](./CODING-PATTERNS.md)
-**IF** integrando com WordPress ou APIs externas → leia [INTEGRATION-PATTERNS.md](./INTEGRATION-PATTERNS.md)
+**IF** integrando com Strapi ou APIs externas → leia [INTEGRATION-PATTERNS.md](./INTEGRATION-PATTERNS.md)
 **IF** checklist antes de commitar ou iniciar feature → leia [IMPLEMENTATION-CHECKLIST.md](./IMPLEMENTATION-CHECKLIST.md)
 **IF** implementando algo visual → consulte `site/design-system.html` e a rule `design-system.mdc`
 

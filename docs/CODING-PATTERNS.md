@@ -11,11 +11,11 @@ Padroes de implementacao para componentes, pages e services no Next.js.
 **Key rules**:
 - Server Components por padrao, `'use client'` somente com interatividade
 - Pages delegam para `lib/` — sem logica de negocio nas pages
-- Componentes nunca acessam WordPress API diretamente
+- Componentes nunca acessam Strapi API diretamente
 - Tailwind classes conforme Design System — sem estilos inline
 
 **See also**:
-- [INTEGRATION-PATTERNS.md](./INTEGRATION-PATTERNS.md) — anti-corruption layer
+- [INTEGRATION-PATTERNS.md](./INTEGRATION-PATTERNS.md) — anti-corruption layer, Strapi
 - [IMPLEMENTATION-CHECKLIST.md](./IMPLEMENTATION-CHECKLIST.md) — checklists
 
 ---
@@ -42,13 +42,13 @@ Pages (`app/**/page.tsx`) devem ser **enxutas**: buscar dados e compor component
 - Page components delegam para `lib/` services
 - Maximo ~20 linhas de logica por page
 - Transformacoes de dados ficam em `lib/` (services ou transformers)
-- Pages so conhecem tipos limpos, nunca estruturas cruas do WordPress
+- Pages so conhecem tipos limpos, nunca estruturas cruas do Strapi
 
 ### Exemplos
 
 ```tsx
 // app/blog/page.tsx — CORRETO: page enxuta
-import { getPosts } from '@/lib/wordpress/client'
+import { getPosts } from '@/lib/strapi/client'
 import { PostList } from '@/app/components/blog/PostList'
 
 export const revalidate = 60
@@ -67,14 +67,13 @@ export default async function BlogPage() {
 ```tsx
 // app/blog/page.tsx — ERRADO: logica na page
 export default async function BlogPage() {
-  const res = await fetch(`${process.env.WORDPRESS_GRAPHQL_URL}`, {
-    method: 'POST',
-    body: JSON.stringify({ query: '{ posts { nodes { title slug } } }' }),
+  const res = await fetch(`${process.env.STRAPI_API_URL}/api/posts`, {
+    headers: { Authorization: `Bearer ${process.env.STRAPI_API_TOKEN}` },
   })
   const data = await res.json()
-  const posts = data.data.posts.nodes.map((p: any) => ({
-    title: p.title,
-    slug: p.slug,
+  const posts = (data.data ?? []).map((p: { attributes: { title: string; slug: string } }) => ({
+    title: p.attributes?.title ?? '',
+    slug: p.attributes?.slug ?? '',
     // 30 linhas de transformacao...
   }))
   // ...
@@ -108,7 +107,7 @@ Se o componente nao precisa de interatividade, **nao** use `'use client'`. Compo
 
 ```tsx
 // app/blog/[slug]/page.tsx (Server Component — busca dados)
-import { getPost } from '@/lib/wordpress/client'
+import { getPost } from '@/lib/strapi/client'
 import { ShareButtons } from '@/app/components/blog/ShareButtons'
 
 export default async function PostPage({ params }: { params: { slug: string } }) {
@@ -155,20 +154,20 @@ export function ShareButtons({ url, title }: ShareButtonsProps) {
 
 ## CMS API Leakage Prevention
 
-Componentes **nunca** devem conhecer detalhes da API do WordPress (GraphQL queries, REST endpoints, estrutura de response). Toda essa complexidade fica encapsulada na anti-corruption layer (`lib/wordpress/`).
+Componentes **nunca** devem conhecer detalhes da API do Strapi (REST endpoints, estrutura de response). Toda essa complexidade fica encapsulada na anti-corruption layer (`lib/strapi/`).
 
 ### Rules
 
-- Componentes so importam de `@/lib/wordpress/client` e `@/lib/wordpress/types`
-- **Nunca** importar de `@/lib/wordpress/queries/*`
-- **Nunca** usar `gql`, `graphql-request`, ou `fetch` direto para WordPress em componentes
-- **Nunca** tipar componentes com estruturas do WordPress (ex: `WP_REST_Post`)
+- Componentes so importam de `@/lib/strapi/client` e `@/lib/strapi/types`
+- **Nunca** importar de `@/lib/strapi/api/*`
+- **Nunca** usar `fetch` direto para Strapi em componentes
+- **Nunca** tipar componentes com estruturas do Strapi (ex: resposta bruta da API)
 
 ### Exemplo
 
 ```tsx
 // CORRETO: componente usa tipos limpos
-import type { Post } from '@/lib/wordpress/types'
+import type { Post } from '@/lib/strapi/types'
 
 interface PostCardProps {
   post: Post
@@ -184,14 +183,12 @@ export function PostCard({ post }: PostCardProps) {
   )
 }
 
-// ERRADO: componente conhece estrutura do WordPress
-import type { WP_REST_Post } from 'wp-types'
-
-export function PostCard({ post }: { post: WP_REST_Post }) {
+// ERRADO: componente conhece estrutura do Strapi
+export function PostCard({ post }: { post: { id: number; attributes: { title: string } } }) {
   return (
     <article>
-      <h3 dangerouslySetInnerHTML={{ __html: post.title.rendered }} />
-      <span>{post._embedded?.['wp:term']?.[0]?.[0]?.name}</span>
+      <h3>{post.attributes.title}</h3>
+      <span>{/* dados aninhados do Strapi */}</span>
     </article>
   )
 }
@@ -206,14 +203,14 @@ export function PostCard({ post }: { post: WP_REST_Post }) {
 | **Page** (`app/**/page.tsx`) | Routing, SEO, composicao de layout, delegacao para services | `BlogPage`, `PostPage` |
 | **Component** (`app/components/`) | Renderizacao visual, recebe dados via props | `PostCard`, `Button`, `Header` |
 | **Service/Client** (`lib/`) | Buscar dados, transformar, logica de negocio | `getPosts()`, `getPage()` |
-| **Types** (`lib/wordpress/types.ts`) | Contratos de dados entre camadas | `Post`, `Page`, `Category` |
+| **Types** (`lib/strapi/types.ts`) | Contratos de dados entre camadas | `Post`, `Page`, `Category` |
 
 ### Fluxo
 
 ```
 Page (Server Component)
-  → chama lib/wordpress/client.ts (busca + transforma dados)
-    → client.ts chama queries/ (GraphQL) ou REST API
+  → chama lib/strapi/client.ts (busca + transforma dados)
+    → client.ts chama api/ (REST ou GraphQL)
     → client.ts usa transformers.ts para limpar dados
   → passa tipos limpos como props para Components
     → Components renderizam usando Tailwind (tokens do DS)
@@ -227,7 +224,7 @@ Page (Server Component)
 
 ```tsx
 // app/blog/page.tsx
-import { getPosts } from '@/lib/wordpress/client'
+import { getPosts } from '@/lib/strapi/client'
 
 export const revalidate = 60
 
@@ -241,7 +238,7 @@ export default async function BlogPage() {
 
 ```tsx
 // app/blog/[slug]/page.tsx
-import { getPost, getPostSlugs } from '@/lib/wordpress/client'
+import { getPost, getPostSlugs } from '@/lib/strapi/client'
 import type { Metadata } from 'next'
 
 export async function generateStaticParams() {
@@ -268,7 +265,7 @@ export default async function PostPage({ params }: Props) {
 
 ```tsx
 // app/layout.tsx
-import { getMenus } from '@/lib/wordpress/client'
+import { getMenus } from '@/lib/strapi/client'
 import { Header } from '@/app/components/layout/Header'
 import { Footer } from '@/app/components/layout/Footer'
 
@@ -391,11 +388,10 @@ export function PostCard({ post }: { post: Post }) {
 ### 2. Fetch Direto em Componentes
 
 ```tsx
-// ERRADO: componente conhece API do WordPress
+// ERRADO: componente conhece API do Strapi
 export default async function BlogPage() {
-  const res = await fetch('https://cms.omie.com.br/graphql', {
-    method: 'POST',
-    body: JSON.stringify({ query: POSTS_QUERY }),
+  const res = await fetch(`${process.env.STRAPI_API_URL}/api/posts`, {
+    headers: { Authorization: `Bearer ${process.env.STRAPI_API_TOKEN}` },
   })
 }
 
@@ -439,7 +435,7 @@ export default async function BlogPage() {
 function PostCard({ post }: { post: any }) {
 
 // CORRETO
-import type { Post } from '@/lib/wordpress/types'
+import type { Post } from '@/lib/strapi/types'
 function PostCard({ post }: { post: Post }) {
 ```
 

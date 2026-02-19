@@ -1,12 +1,12 @@
 # Padroes de Integracao — Projeto OMIE
 
-Padroes e boas praticas para integrar o frontend Next.js com WordPress (CMS) e quaisquer APIs externas futuras.
+Padroes e boas praticas para integrar o frontend Next.js com Strapi (CMS) e quaisquer APIs externas futuras.
 
 > **Navigation**: Return to [ARCHITECTURE-OVERVIEW.md](./ARCHITECTURE-OVERVIEW.md) | See also [CODING-PATTERNS.md](./CODING-PATTERNS.md) | [IMPLEMENTATION-CHECKLIST.md](./IMPLEMENTATION-CHECKLIST.md)
 
 ## Quick Reference (For LLMs)
 
-**When to use this doc**: Integrating with WordPress API, external services, or creating new data sources
+**When to use this doc**: Integrating with Strapi API, external services, or creating new data sources
 
 **Key rules**:
 - Toda integracao DEVE ter uma anti-corruption layer em `lib/`
@@ -24,7 +24,7 @@ Padroes e boas praticas para integrar o frontend Next.js com WordPress (CMS) e q
 ## Table of Contents
 
 - [Anti-Corruption Layer](#anti-corruption-layer)
-- [WordPress Integration](#wordpress-integration)
+- [Strapi Integration](#strapi-integration)
 - [Padrao para Novas Integracoes](#padrao-para-novas-integracoes)
 - [Client Encapsulation](#client-encapsulation)
 - [Mock Client para Desenvolvimento](#mock-client-para-desenvolvimento)
@@ -56,15 +56,15 @@ Para qualquer integracao, a ACL segue esta estrutura:
 lib/<nome-integracao>/
   client.ts          # Ponto de entrada unico. Funcoes publicas.
   types.ts           # Interfaces TypeScript do dominio (nao da API externa)
-  queries/           # Detalhes de comunicacao (GraphQL, REST, SDK) — NUNCA exportado para componentes
-  transformers.ts    # Converte resposta da API externa → tipos do dominio
+  api/               # Chamadas REST/GraphQL (interno) — NUNCA exportado para componentes
+  transformers.ts   # Converte resposta da API externa → tipos do dominio
 ```
 
 ### Por que usar ACL?
 
 | Beneficio | Descricao |
 |---|---|
-| **Desacoplamento** | Trocar WordPress por Strapi requer mudar apenas `lib/wordpress/`, nao componentes |
+| **Desacoplamento** | Trocar Strapi por outro CMS requer mudar apenas `lib/strapi/`, nao componentes |
 | **Tipagem segura** | Dados transformados em tipos proprios, sem `any` ou estruturas cruas |
 | **Testabilidade** | Mock client para testes e desenvolvimento sem API externa |
 | **Resilience** | Fallbacks centralizados em um unico lugar |
@@ -72,19 +72,19 @@ lib/<nome-integracao>/
 
 ---
 
-## WordPress Integration
+## Strapi Integration
 
 ### Estrutura
 
 ```
-lib/wordpress/
+lib/strapi/
   client.ts          # getPosts(), getPost(), getPage(), getMenus(), getCategories()
   types.ts           # Post, Page, Category, Menu, MediaItem
-  queries/
-    posts.ts         # Queries GraphQL para posts
-    pages.ts         # Queries GraphQL para paginas
-    menus.ts         # Queries GraphQL para menus
-  transformers.ts    # Transforma WP_Post → Post, WP_Page → Page, etc.
+  api/
+    posts.ts         # Chamadas REST para posts
+    pages.ts         # Chamadas REST para paginas
+    menus.ts         # Chamadas REST para menus
+  transformers.ts   # Transforma resposta Strapi → Post, Page, etc.
 ```
 
 ### Client (`client.ts`)
@@ -92,12 +92,12 @@ lib/wordpress/
 O client e o unico ponto de entrada para componentes:
 
 ```tsx
-import { fetchPostsFromWP } from './queries/posts'
+import { fetchPostsFromStrapi } from './api/posts'
 import { transformPost } from './transformers'
 import type { Post, PostListOptions } from './types'
 
 export async function getPosts(options?: PostListOptions): Promise<Post[]> {
-  const rawPosts = await fetchPostsFromWP(options)
+  const rawPosts = await fetchPostsFromStrapi(options)
   return rawPosts.map(transformPost)
 }
 
@@ -115,7 +115,7 @@ export async function getPostSlugs(): Promise<string[]> {
 
 ### Types (`types.ts`)
 
-Tipos do **dominio** do projeto, nao do WordPress:
+Tipos do **dominio** do projeto, nao do Strapi:
 
 ```tsx
 export interface Post {
@@ -162,74 +162,61 @@ export interface PostListOptions {
   limit?: number
   category?: string
   search?: string
-  offset?: number
+  start?: number
 }
 ```
 
-### Queries (`queries/posts.ts`)
+### API (`api/posts.ts`)
 
-Detalhes de GraphQL ficam isolados aqui. **Componentes nunca importam deste modulo.**
+Detalhes de REST ficam isolados aqui. **Componentes nunca importam deste modulo.**
 
 ```tsx
-const WORDPRESS_GRAPHQL_URL = process.env.WORDPRESS_GRAPHQL_URL!
+const STRAPI_API_URL = process.env.STRAPI_API_URL!
 
-export async function fetchPostsFromWP(options?: PostListOptions) {
-  const query = `
-    query GetPosts($first: Int, $after: String) {
-      posts(first: $first, after: $after) {
-        nodes {
-          id
-          title
-          slug
-          excerpt
-          content
-          date
-          featuredImage { node { sourceUrl } }
-          categories { nodes { name slug } }
-          author { node { name } }
-        }
-      }
-    }
-  `
+export async function fetchPostsFromStrapi(options?: PostListOptions) {
+  const params = new URLSearchParams({
+    'pagination[limit]': String(options?.limit ?? 10),
+    'pagination[start]': String(options?.start ?? 0),
+    'populate': 'featuredImage,category,author',
+  })
+  if (options?.category) params.set('filters[category][slug][$eq]', options.category)
 
-  const response = await fetch(WORDPRESS_GRAPHQL_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      query,
-      variables: { first: options?.limit ?? 10 },
-    }),
+  const response = await fetch(`${STRAPI_API_URL}/api/posts?${params}`, {
+    headers: {
+      Authorization: `Bearer ${process.env.STRAPI_API_TOKEN}`,
+    },
     next: { revalidate: 60 },
+    signal: AbortSignal.timeout(10000),
   })
 
   if (!response.ok) {
-    throw new Error(`WordPress API error: ${response.status}`)
+    throw new Error(`Strapi API error: ${response.status}`)
   }
 
   const json = await response.json()
-  return json.data.posts.nodes
+  return json.data ?? []
 }
 ```
 
 ### Transformers (`transformers.ts`)
 
-Converte a resposta bruta do WordPress em tipos limpos:
+Converte a resposta bruta do Strapi em tipos limpos:
 
 ```tsx
 import type { Post } from './types'
 
-export function transformPost(raw: any): Post {
+export function transformPost(raw: StrapiPost): Post {
   return {
-    id: raw.id ?? raw.databaseId?.toString(),
-    title: raw.title,
-    slug: raw.slug,
-    excerpt: stripHtmlTags(raw.excerpt ?? ''),
-    content: raw.content,
-    date: formatDate(raw.date),
-    featuredImage: raw.featuredImage?.node?.sourceUrl ?? '',
-    category: raw.categories?.nodes?.[0]?.name ?? '',
-    categorySlug: raw.categories?.nodes?.[0]?.slug ?? '',
-    author: raw.author?.node?.name ?? '',
+    id: String(raw.id),
+    title: raw.attributes?.title ?? '',
+    slug: raw.attributes?.slug ?? '',
+    excerpt: stripHtmlTags(raw.attributes?.excerpt ?? ''),
+    content: raw.attributes?.content ?? '',
+    date: formatDate(raw.attributes?.publishedAt ?? raw.attributes?.createdAt),
+    featuredImage: raw.attributes?.featuredImage?.data?.attributes?.url ?? '',
+    category: raw.attributes?.category?.data?.attributes?.name ?? '',
+    categorySlug: raw.attributes?.category?.data?.attributes?.slug ?? '',
+    author: raw.attributes?.author?.data?.attributes?.name ?? 'OMIE',
   }
 }
 
@@ -256,7 +243,7 @@ Qualquer integracao futura (analytics, CRM, servicos de email, APIs de terceiros
 lib/<nome>/
   client.ts          # Funcoes publicas
   types.ts           # Interfaces do dominio
-  queries/           # Detalhes de comunicacao (se aplicavel)
+  api/               # Chamadas REST/GraphQL (se aplicavel)
   transformers.ts    # Conversao de dados (se aplicavel)
 ```
 
@@ -302,10 +289,8 @@ O client **encapsula todos os detalhes HTTP/API**. Componentes so conhecem opera
 const posts = await getPosts({ limit: 6, category: 'gestao' })
 
 // ERRADO: componente conhece detalhes HTTP
-const res = await fetch('https://cms.omie.com.br/graphql', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ query: POSTS_QUERY, variables: { first: 6 } }),
+const res = await fetch(`${process.env.STRAPI_API_URL}/api/posts`, {
+  headers: { Authorization: `Bearer ${process.env.STRAPI_API_TOKEN}` },
 })
 ```
 
@@ -313,10 +298,10 @@ const res = await fetch('https://cms.omie.com.br/graphql', {
 
 ## Mock Client para Desenvolvimento
 
-Para desenvolver sem depender do WordPress rodando, crie um mock client:
+Para desenvolver sem depender do Strapi rodando, crie um mock client:
 
 ```tsx
-// lib/wordpress/client.mock.ts
+// lib/strapi/client.mock.ts
 import type { Post, Page } from './types'
 
 const mockPosts: Post[] = [
@@ -349,18 +334,18 @@ export async function getPost(slug: string): Promise<Post | null> {
 ### Alternando entre Mock e Producao
 
 ```tsx
-// lib/wordpress/client.ts
-const USE_MOCK = process.env.WORDPRESS_MOCK === 'true'
+// lib/strapi/client.ts
+const USE_MOCK = process.env.STRAPI_MOCK === 'true'
 
 export const getPosts = USE_MOCK
   ? (await import('./client.mock')).getPosts
   : getPostsFromAPI
 
 // .env.local (desenvolvimento)
-WORDPRESS_MOCK=true
+STRAPI_MOCK=true
 
 // .env.production
-WORDPRESS_MOCK=false
+STRAPI_MOCK=false
 ```
 
 ---
@@ -369,13 +354,11 @@ WORDPRESS_MOCK=false
 
 ### Timeouts
 
-Toda chamada ao WordPress deve ter timeout:
+Toda chamada ao Strapi deve ter timeout:
 
 ```tsx
-const response = await fetch(WORDPRESS_GRAPHQL_URL, {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ query, variables }),
+const response = await fetch(`${STRAPI_API_URL}/api/posts`, {
+  headers: { Authorization: `Bearer ${process.env.STRAPI_API_TOKEN}` },
   signal: AbortSignal.timeout(10000), // 10 segundos
   next: { revalidate: 60 },
 })
@@ -383,15 +366,15 @@ const response = await fetch(WORDPRESS_GRAPHQL_URL, {
 
 ### Graceful Degradation
 
-Se o WordPress estiver indisponivel, a pagina nao deve quebrar:
+Se o Strapi estiver indisponivel, a pagina nao deve quebrar:
 
 ```tsx
 export async function getPosts(options?: PostListOptions): Promise<Post[]> {
   try {
-    const rawPosts = await fetchPostsFromWP(options)
+    const rawPosts = await fetchPostsFromStrapi(options)
     return rawPosts.map(transformPost)
   } catch (error) {
-    console.error('Failed to fetch posts from WordPress:', error)
+    console.error('Failed to fetch posts from Strapi:', error)
     return [] // Retorna lista vazia em vez de quebrar
   }
 }
@@ -403,7 +386,7 @@ Para paginas estaticas, o ISR do Next.js ja oferece resiliencia: se a revalidaca
 
 | Camada | Responsabilidade |
 |---|---|
-| `queries/` | Lanca erro HTTP (`throw new Error`) |
+| `api/` | Lanca erro HTTP (`throw new Error`) |
 | `client.ts` | Captura, loga, retorna fallback ou re-lanca |
 | `page.tsx` | Usa `error.tsx` boundary ou condicional |
 
@@ -417,9 +400,9 @@ URLs e tokens **nunca** sao hardcoded:
 
 ```env
 # .env.local
-WORDPRESS_API_URL=https://cms.omie.com.br/wp-json/wp/v2
-WORDPRESS_GRAPHQL_URL=https://cms.omie.com.br/graphql
-WORDPRESS_PREVIEW_SECRET=token-seguro-aqui
+STRAPI_API_URL=https://cms.omie.com.br
+STRAPI_API_TOKEN=token-seguro-aqui
+STRAPI_PREVIEW_SECRET=token-preview-aqui
 ```
 
 ### Regras
@@ -447,7 +430,7 @@ const response = await fetch(url, {
 
 ### On-Demand Revalidation
 
-Para atualizar imediatamente quando um editor publica conteudo no WordPress:
+Para atualizar imediatamente quando um editor publica conteudo no Strapi:
 
 ```tsx
 // app/api/revalidate/route.ts
@@ -470,7 +453,7 @@ export async function POST(request: NextRequest) {
 }
 ```
 
-Configure um webhook no WordPress para chamar esta rota ao publicar/atualizar posts.
+Configure um webhook no Strapi (Lifecycles ou Admin panel) para chamar esta rota ao publicar/atualizar posts.
 
 ---
 
@@ -488,7 +471,7 @@ export async function GET(request: Request) {
   const secret = searchParams.get('secret')
   const slug = searchParams.get('slug')
 
-  if (secret !== process.env.WORDPRESS_PREVIEW_SECRET) {
+  if (secret !== process.env.STRAPI_PREVIEW_SECRET) {
     return new Response('Invalid token', { status: 401 })
   }
 
@@ -501,7 +484,7 @@ export async function GET(request: Request) {
 No client, verificar draft mode:
 
 ```tsx
-// lib/wordpress/client.ts
+// lib/strapi/client.ts
 import { draftMode } from 'next/headers'
 
 export async function getPost(slug: string): Promise<Post | null> {
@@ -523,7 +506,7 @@ export async function getPost(slug: string): Promise<Post | null> {
 ```tsx
 // ERRADO
 export default async function BlogPage() {
-  const res = await fetch(process.env.WORDPRESS_GRAPHQL_URL!, { /* ... */ })
+  const res = await fetch(`${process.env.STRAPI_API_URL}/api/posts`, { /* ... */ })
   const data = await res.json()
 }
 
@@ -537,18 +520,18 @@ export default async function BlogPage() {
 
 ```tsx
 // ERRADO
-const res = await fetch('https://cms.omie.com.br/graphql')
+const res = await fetch('https://cms.omie.com.br/api/posts')
 
 // CORRETO
-const res = await fetch(process.env.WORDPRESS_GRAPHQL_URL!)
+const res = await fetch(`${process.env.STRAPI_API_URL}/api/posts`)
 ```
 
 ### 3. Falha Cascateada
 
 ```tsx
-// ERRADO: WordPress fora do ar quebra toda a pagina
+// ERRADO: Strapi fora do ar quebra toda a pagina
 export default async function HomePage() {
-  const posts = await getPosts() // Lanca excecao se WP estiver fora
+  const posts = await getPosts() // Lanca excecao se Strapi estiver fora
   const menus = await getMenus() // Nunca executa
 }
 
@@ -561,14 +544,14 @@ export default async function HomePage() {
 }
 ```
 
-### 4. Tipos do WordPress Vazam para Componentes
+### 4. Tipos do Strapi Vazam para Componentes
 
 ```tsx
-// ERRADO: componente conhece estrutura interna do WordPress
+// ERRADO: componente conhece estrutura interna do Strapi
 interface Props {
   post: {
-    title: { rendered: string }
-    _embedded: { 'wp:featuredmedia': Array<{ source_url: string }> }
+    attributes: { title: string; slug: string }
+    id: number
   }
 }
 
@@ -593,8 +576,8 @@ const res = await fetch(url, {
 ### 6. Client Compartilhado entre Integracoes
 
 ```tsx
-// ERRADO: reusar WordPress client para outra API
-import { fetchGraphQL } from '@/lib/wordpress/queries/posts'
+// ERRADO: reusar Strapi client para outra API
+import { fetchPostsFromStrapi } from '@/lib/strapi/api/posts'
 // Usando para buscar dados de CRM... NAO!
 
 // CORRETO: cada integracao tem seu proprio client

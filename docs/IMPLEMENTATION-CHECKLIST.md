@@ -43,7 +43,7 @@ Ao criar uma nova pagina (`app/**/page.tsx`):
 
 ### Dados
 
-- [ ] Dados buscados via `lib/wordpress/client.ts` (anti-corruption layer)
+- [ ] Dados buscados via `lib/strapi/client.ts` (anti-corruption layer)
 - [ ] Tipagem completa — sem `any`
 - [ ] Revalidacao configurada (`export const revalidate = X` ou `next: { revalidate }`)
 
@@ -116,7 +116,7 @@ Ao criar um componente visual reutilizavel (`app/components/`):
 
 ## Nova Integracao (API Externa)
 
-Ao integrar com uma nova API externa (WordPress ja incluso, mas tambem analytics, CRM, etc.):
+Ao integrar com uma nova API externa (Strapi ja incluso, mas tambem analytics, CRM, etc.):
 
 ### Anti-Corruption Layer
 
@@ -124,7 +124,7 @@ Ao integrar com uma nova API externa (WordPress ja incluso, mas tambem analytics
 - [ ] `client.ts` como ponto de entrada unico
 - [ ] `types.ts` com interfaces do dominio (nao da API externa)
 - [ ] `transformers.ts` para converter dados da API → tipos do dominio
-- [ ] `queries/` para detalhes de comunicacao (se GraphQL)
+- [ ] `api/` ou `queries/` para detalhes de comunicacao (REST/GraphQL)
 
 ### Configuracao
 
@@ -141,7 +141,7 @@ Ao integrar com uma nova API externa (WordPress ja incluso, mas tambem analytics
 ### Isolamento
 
 - [ ] Componentes so importam de `client.ts` e `types.ts`
-- [ ] Nenhum componente importa de `queries/`
+- [ ] Nenhum componente importa de `api/` ou `queries/`
 - [ ] Nenhum componente usa `fetch` diretamente para a API
 - [ ] Integracao nao depende de outra integracao
 
@@ -158,9 +158,9 @@ Ao adicionar funcionalidade ao blog (nova secao, filtro, busca, etc.):
 
 ### Dados
 
-- [ ] Dados via `lib/wordpress/client.ts` — nova funcao adicionada ao client se necessario
+- [ ] Dados via `lib/strapi/client.ts` — nova funcao adicionada ao client se necessario
 - [ ] Tipo adicionado/atualizado em `types.ts` se for dado novo
-- [ ] Transformer adicionado/atualizado se formato do WordPress mudou
+- [ ] Transformer adicionado/atualizado se formato do Strapi mudou
 
 ### Visual
 
@@ -196,14 +196,14 @@ Antes de cada commit, verificar:
 
 - [ ] Sem `any` em tipos
 - [ ] Sem `'use client'` desnecessario
-- [ ] Sem `fetch` direto para WordPress em componentes
+- [ ] Sem `fetch` direto para Strapi em componentes
 - [ ] Sem URLs hardcoded
 - [ ] Sem `style` inline (usar Tailwind)
 
 ### Anti-Corruption Layer
 
 - [ ] Componentes so importam de `lib/*/client.ts` e `lib/*/types.ts`
-- [ ] Nenhum componente importa de `lib/*/queries/*`
+- [ ] Nenhum componente importa de `lib/*/api/*` ou `lib/*/queries/*`
 - [ ] Variaveis de ambiente para URLs/tokens
 
 ---
@@ -214,10 +214,10 @@ Antes de cada commit, verificar:
 
 | Anti-Pattern | Correto |
 |---|---|
-| `fetch(process.env.WORDPRESS_GRAPHQL_URL)` em componente | `getPosts()` via `lib/wordpress/client` |
+| `fetch(process.env.STRAPI_API_URL)` em componente | `getPosts()` via `lib/strapi/client` |
 | `any` em tipos/props | Interface tipada |
-| URL hardcoded (`'https://cms.omie.com.br/...'`) | `process.env.WORDPRESS_GRAPHQL_URL` |
-| Token no codigo (`const secret = 'abc123'`) | `process.env.WORDPRESS_PREVIEW_SECRET` |
+| URL hardcoded (`'https://cms.omie.com.br/...'`) | `process.env.STRAPI_API_URL` |
+| Token no codigo (`const secret = 'abc123'`) | `process.env.STRAPI_PREVIEW_SECRET` |
 
 ### Graves (corrigir antes de merge)
 
