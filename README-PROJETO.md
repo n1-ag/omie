@@ -4,8 +4,8 @@ Este documento descreve como subir a **base do Strapi CMS** e o **frontend Next.
 
 ## Visão geral
 
-- **Strapi (pasta `cms/`)**: headless CMS para páginas, blog (posts, categorias) e menus.
-- **Next.js (pasta `front/`)**: frontend com App Router, Tailwind v4 e anti-corruption layer em `lib/strapi/`.
+- **Strapi (pasta `cms/` ou hospedado externamente)**: headless CMS para páginas, blog (posts, categorias) e menus. Pode rodar localmente ou em outro host (ex.: [Strapi Cloud](https://cloud.strapi.io)).
+- **Next.js (pasta `front/`)**: frontend com App Router, **Tailwind CSS v4** e anti-corruption layer em `lib/strapi/`.
 
 ## 1. Strapi CMS
 
@@ -37,6 +37,23 @@ Na primeira execução:
 
 O Strapi ficará em `http://localhost:1337`. A API REST está em `http://localhost:1337/api/posts`, `/api/pages`, etc.
 
+### CMS hospedado em outro local (ex.: Strapi Cloud)
+
+O frontend **não exige** que o Strapi rode na mesma máquina. Basta apontar as variáveis de ambiente do `front/` para a URL e o token da sua instância:
+
+- **Strapi Cloud**: após criar o projeto em [cloud.strapi.io](https://cloud.strapi.io), use a URL da API (ex.: `https://seu-projeto.strapiapp.com`) e um API Token gerado no painel.
+- **Outro servidor**: use a URL base da API (ex.: `https://cms.seudominio.com`).
+
+No `front/.env.local`:
+
+```bash
+STRAPI_API_URL=https://seu-projeto.strapiapp.com   # ou sua URL
+STRAPI_API_TOKEN=<token da instância>
+STRAPI_MOCK=false
+```
+
+O front consome a mesma API REST; tanto faz ser localhost ou cloud.
+
 ### Menu (header/footer)
 
 O front espera dois menus com `slug` **header** e **footer**. Em **Content Manager → Menu**, crie duas entradas:
@@ -46,16 +63,23 @@ O front espera dois menus com `slug` **header** e **footer**. Em **Content Manag
 
 O campo `items` é um JSON array de `{ "id": string, "label": string, "url": string, "children"?: [...] }`.
 
+#### Para usuários leigos: não é obrigatório usar JSON
+
+Hoje o content-type **Menu** usa um único campo **JSON** por simplicidade. Para editores que não querem mexer em JSON, a melhor opção é evoluir o schema para **componentes dinâmicos** no Strapi:
+
+1. **Componente repeatable** (ex.: `MenuItem`) com campos: `label` (texto), `url` (texto), e opcionalmente `children` (outro repeatable aninhado).
+2. No **Content-Type Builder** → Menu: trocar o atributo `items` de tipo **JSON** para tipo **Component** (repeatable), usando esse componente.
+3. No front, o transformer em `lib/strapi/` continua consumindo a mesma estrutura lógica; a API do Strapi passa a retornar o array de itens já como relação/componente.
+
+Assim, no **Content Manager** o usuário passa a preencher “Label” e “URL” em formulário, adicionar subitens por botão, sem editar JSON. Custom Post Types (CPT) e outros conteúdos estruturados seguem a mesma ideia: preferir **relações e componentes** no Strapi em vez de campos JSON quando o público for leigo.
+
+O schema atual do Menu está em `cms/src/api/menu/content-types/menu/schema.json`.
+
 ## 2. Frontend Next.js
 
 ### Variáveis de ambiente
 
-Na pasta `front/`, crie `.env.local` a partir do exemplo:
-
-```bash
-cd front
-cp .env.example .env.local
-```
+Na pasta `front/`, crie `.env.local` (se existir `.env.example`, use `cp .env.example .env.local`; caso contrário, crie o arquivo manualmente com as variáveis abaixo).
 
 Edite `.env.local`:
 
@@ -76,6 +100,16 @@ npm run dev
 ```
 
 O site ficará em `http://localhost:3000`.
+
+### Tailwind CSS
+
+O projeto **já está preparado** para usar **Tailwind CSS v4**:
+
+- Dependências em `front/package.json`: `tailwindcss` e `@tailwindcss/postcss`.
+- Entrada em `front/src/app/globals.css`: `@import "tailwindcss"` e blocos `@theme inline` com tokens (cores, fontes).
+- PostCSS em `front/postcss.config.mjs` com `@tailwindcss/postcss`.
+
+Use classes utilitárias Tailwind nos componentes; evite CSS custom ou `style` inline quando Tailwind resolver. Padrões e tokens do Design System estão em `docs/CODING-PATTERNS.md` e `docs/ARCHITECTURE-OVERVIEW.md`.
 
 ### Estrutura do front (resumo)
 

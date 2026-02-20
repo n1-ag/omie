@@ -15,9 +15,9 @@
       "required": true
     },
     "items": {
-      "type": "json",
-      "required": false,
-      "default": []
+      "type": "component",
+      "repeatable": true,
+      "component": "menu.menu-item"
     }
   }
 }

@@ -9,7 +9,7 @@ const STRAPI_API_TOKEN = process.env.STRAPI_API_TOKEN ?? '';
 export async function fetchMenuBySlug(slug: string): Promise<StrapiMenuResponse | null> {
   const params = new URLSearchParams({
     'filters[slug][$eq]': slug,
-    populate: 'items,items.children',
+    populate: 'items,items.children,items.children.children',
   });
 
   const response = await fetch(`${STRAPI_API_URL}/api/menus?${params}`, {
@@ -28,15 +28,23 @@ export async function fetchMenuBySlug(slug: string): Promise<StrapiMenuResponse 
   return json.data?.[0] ?? null;
 }
 
+/** Item no formato JSON (legado) ou componente Strapi (documentId, label, url, children). */
+export type StrapiMenuItemRaw = {
+  id?: number;
+  documentId?: string;
+  label?: string;
+  url?: string;
+  children?: StrapiMenuItemRaw[];
+};
+
+/** Resposta do Menu: v4 (attributes) ou v5 (campos no topo). */
 export interface StrapiMenuResponse {
-  id: number;
+  id?: number;
+  documentId?: string;
+  slug?: string;
   attributes?: {
     slug?: string;
-    items?: Array<{
-      id?: number;
-      label?: string;
-      url?: string;
-      children?: Array<{ id?: number; label?: string; url?: string }>;
-    }>;
+    items?: StrapiMenuItemRaw[];
   };
+  items?: StrapiMenuItemRaw[];
 }

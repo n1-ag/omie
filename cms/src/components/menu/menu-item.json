@@ -1,0 +1,24 @@
+{
+  "collectionName": "components_menu_menu_items",
+  "info": {
+    "displayName": "Item do menu",
+    "icon": "bulletList",
+    "description": "Um item de navegação (label + URL). Pode ter subitens."
+  },
+  "attributes": {
+    "label": {
+      "type": "string",
+      "required": true
+    },
+    "url": {
+      "type": "string",
+      "required": true,
+      "default": "/"
+    },
+    "children": {
+      "type": "component",
+      "repeatable": true,
+      "component": "menu.menu-item"
+    }
+  }
+}
