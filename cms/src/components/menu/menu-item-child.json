@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_menu_menu_item_children",
+  "info": {
+    "displayName": "Subitem do menu",
+    "icon": "arrowRight",
+    "description": "Subitem (um nível abaixo do item principal)."
+  },
+  "attributes": {
+    "label": {
+      "type": "string",
+      "required": true
+    },
+    "url": {
+      "type": "string",
+      "required": true,
+      "default": "/"
+    }
+  }
+}
