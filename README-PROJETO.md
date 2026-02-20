@@ -4,8 +4,8 @@ Este documento descreve como subir a **base do Strapi CMS** e o **frontend Next.
 
 ## Visão geral
 
-- **Strapi (pasta `cms/`)**: headless CMS para páginas, blog (posts, categorias) e menus.
-- **Next.js (pasta `front/`)**: frontend com App Router, Tailwind v4 e anti-corruption layer em `lib/strapi/`.
+- **Strapi (pasta `cms/` ou hospedado externamente)**: headless CMS para páginas, blog (posts, categorias) e menus. Pode rodar localmente ou em outro host (ex.: [Strapi Cloud](https://cloud.strapi.io)).
+- **Next.js (pasta `front/`)**: frontend com App Router, **Tailwind CSS v4** e anti-corruption layer em `lib/strapi/`.
 
 ## 1. Strapi CMS
 
@@ -16,26 +16,70 @@ Este documento descreve como subir a **base do Strapi CMS** e o **frontend Next.
 
 ### Instalação e primeiro uso
 
-O projeto já contém a pasta `cms/` criada com Strapi 5 e os content-types definidos em schema:
+O projeto já contém a pasta `cms/` criada com Strapi 5 e os content-types definidos em schema, com **controllers**, **routes** e **services** (obrigatórios para as rotas REST e para aparecer em API Tokens → Token permissions):
 
 - **Post** — blog (title, slug, excerpt, content, featuredImage, category, author)
 - **Category** — categorias do blog (name, slug, posts)
 - **Page** — páginas institucionais (title, slug, content, featuredImage)
-- **Menu** — menus de navegação (slug: `header` | `footer`, items: JSON)
+- **Menu** — menus de navegação (slug: `header` | `footer`, items: componente repeatable)
 
 ```bash
 cd cms
 npm install   # se ainda não instalou
+npm run build # rebuild para carregar controllers/routes/services
 npm run develop
 ```
+
+**Nota:** Se Menu, Post, Page, Category não aparecerem em API Tokens → Token permissions, apague `.cache`, `build` e `dist`, rode `npm run build` e reinicie o Strapi.
 
 Na primeira execução:
 
 1. Crie o primeiro usuário admin (email e senha).
 2. Em **Content-Type Builder** (ou já criados via schemas em `src/api/`), confira Post, Category, Page, Menu.
 3. Em **Settings → API Tokens**, crie um token (Full access ou apenas leitura para os content-types) e copie o valor.
+4. **Importante**: ao criar ou editar o token, marque as permissões para cada content-type que o front vai consumir:
+   - **Menu** — pelo menos `find` e `findOne` (senão `/api/menus` retorna 404).
+   - **Post** — `find`, `findOne`.
+   - **Page** — `find`, `findOne`.
+   - **Category** — `find`, `findOne` (se o front popular categorias nos posts).
 
-O Strapi ficará em `http://localhost:1337`. A API REST está em `http://localhost:1337/api/posts`, `/api/pages`, etc.
+O Strapi ficará em `http://localhost:1337`. A API REST está em `http://localhost:1337/api/posts`, `/api/pages`, `/api/menus`, etc.
+
+### CMS hospedado em outro local (ex.: Strapi Cloud)
+
+O frontend **não exige** que o Strapi rode na mesma máquina. Basta apontar as variáveis de ambiente do `front/` para a URL e o token da sua instância:
+
+- **Strapi Cloud**: após criar o projeto em [cloud.strapi.io](https://cloud.strapi.io), use a URL da API (ex.: `https://seu-projeto.strapiapp.com`) e um API Token gerado no painel.
+- **Outro servidor**: use a URL base da API (ex.: `https://cms.seudominio.com`).
+
+#### Permissões do API Token (obrigatório no Strapi Cloud)
+
+No Strapi, **todos os content-types são privados por padrão**. Se o token não tiver permissão para um content-type, a API devolve **404** para esse endpoint (ex.: `/api/menus`).
+
+Depois de fazer deploy (ex.: Strapi Cloud):
+
+1. Acesse o **Admin** do Strapi (ex.: `https://orderly-ducks-540238bfe6.strapiapp.com/admin`).
+2. Vá em **Settings** (engrenagem) → **API Tokens**.
+3. Crie um token ou edite o token que o front usa.
+4. Em **Token type**, escolha "Read-only" (só leitura) ou "Full access" conforme necessário.
+5. Em **Token permissions**, habilite para cada content-type que o front consome:
+   - **Menu**: `find`, `findOne`
+   - **Post**: `find`, `findOne`
+   - **Page**: `find`, `findOne`
+   - **Category**: `find`, `findOne`
+6. Salve e use o token em `STRAPI_API_TOKEN` no `front/.env` ou `.env.local`.
+
+Sem essas permissões, o health check em `/api/strapi-health` continuará com `ok: false` e `strapi.status: 404` para menus.
+
+No `front/.env.local`:
+
+```bash
+STRAPI_API_URL=https://seu-projeto.strapiapp.com   # ou sua URL
+STRAPI_API_TOKEN=<token da instância>
+STRAPI_MOCK=false
+```
+
+O front consome a mesma API REST; tanto faz ser localhost ou cloud.
 
 ### Menu (header/footer)
 
@@ -45,6 +89,18 @@ O front espera dois menus com `slug` **header** e **footer**. Em **Content Manag
 - slug: `footer`, items: conforme necessário (mesmo formato JSON).
 
 O campo `items` é um JSON array de `{ "id": string, "label": string, "url": string, "children"?: [...] }`.
+
+#### Para usuários leigos: não é obrigatório usar JSON
+
+Hoje o content-type **Menu** usa um único campo **JSON** por simplicidade. Para editores que não querem mexer em JSON, a melhor opção é evoluir o schema para **componentes dinâmicos** no Strapi:
+
+1. **Componente repeatable** (ex.: `MenuItem`) com campos: `label` (texto), `url` (texto), e opcionalmente `children` (outro repeatable aninhado).
+2. No **Content-Type Builder** → Menu: trocar o atributo `items` de tipo **JSON** para tipo **Component** (repeatable), usando esse componente.
+3. No front, o transformer em `lib/strapi/` continua consumindo a mesma estrutura lógica; a API do Strapi passa a retornar o array de itens já como relação/componente.
+
+Assim, no **Content Manager** o usuário passa a preencher “Label” e “URL” em formulário, adicionar subitens por botão, sem editar JSON. Custom Post Types (CPT) e outros conteúdos estruturados seguem a mesma ideia: preferir **relações e componentes** no Strapi em vez de campos JSON quando o público for leigo.
+
+O schema atual do Menu está em `cms/src/api/menu/content-types/menu/schema.json`.
 
 ## 2. Frontend Next.js
 
@@ -76,6 +132,16 @@ npm run dev
 ```
 
 O site ficará em `http://localhost:3000`.
+
+### Tailwind CSS
+
+O projeto **já está preparado** para usar **Tailwind CSS v4**:
+
+- Dependências em `front/package.json`: `tailwindcss` e `@tailwindcss/postcss`.
+- Entrada em `front/src/app/globals.css`: `@import "tailwindcss"` e blocos `@theme inline` com tokens (cores, fontes).
+- PostCSS em `front/postcss.config.mjs` com `@tailwindcss/postcss`.
+
+Use classes utilitárias Tailwind nos componentes; evite CSS custom ou `style` inline quando Tailwind resolver. Padrões e tokens do Design System estão em `docs/CODING-PATTERNS.md` e `docs/ARCHITECTURE-OVERVIEW.md`.
 
 ### Estrutura do front (resumo)
 

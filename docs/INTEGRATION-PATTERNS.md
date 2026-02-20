@@ -74,7 +74,24 @@ lib/<nome-integracao>/
 
 ## Strapi Integration
 
-### Estrutura
+### CMS (cms/) — Estrutura obrigatoria para collection types
+
+Content types no Strapi **precisam** de controller, routes e services alem do schema. So com `schema.json`, as rotas REST nao sao registradas e o content type **nao aparece** em Settings → API Tokens → Token permissions (o front recebe 404).
+
+**Sempre que criar um novo collection (ou single) type em `cms/src/api/<nome>/`:**
+
+| Arquivo | Obrigatorio | Conteudo |
+|--------|-------------|----------|
+| `content-types/<nome>/schema.json` | Sim | Ja existente ao criar o type |
+| `controllers/<nome>.ts` | **Sim** | `factories.createCoreController('api::<singular>.<singular>')` |
+| `routes/<nome>.ts` | **Sim** | `factories.createCoreRouter('api::<singular>.<singular>')` |
+| `services/<nome>.ts` | **Sim** | `factories.createCoreService('api::<singular>.<singular>')` |
+
+Exemplos no projeto: `cms/src/api/menu/`, `cms/src/api/post/`, `cms/src/api/page/`, `cms/src/api/category/`.
+
+Regra Cursor para nao esquecer: `.cursor/rules/strapi-cms-collection-types.mdc` (aplica ao editar `cms/src/api/**`).
+
+### Estrutura (frontend)
 
 ```
 lib/strapi/

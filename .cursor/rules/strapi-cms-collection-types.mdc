@@ -1,0 +1,72 @@
+---
+description: Strapi CMS — ao criar collection/single types, sempre adicionar controller, routes e services
+globs:
+  - cms/src/api/**/*
+  - cms/src/**/content-types/**/*
+alwaysApply: false
+---
+
+# Strapi CMS — Estrutura Obrigatória para Collection Types
+
+## Problema que esta regra evita
+
+No Strapi, content types (collection types ou single types) **so com schema.json** **nao** registram rotas REST e **nao aparecem** em Settings → API Tokens → Token permissions. O front recebe **404** ao chamar `/api/menus`, `/api/posts`, etc., e nao ha como dar permissao ao token para Menu, Post, Page, Category.
+
+## Regra obrigatoria
+
+**Sempre que criar ou adicionar um novo collection type (ou single type) no CMS**, alem do schema em `content-types/<nome>/schema.json`, e **obrigatorio** criar:
+
+1. **Controller** — `src/api/<api-name>/controllers/<api-name>.ts`
+2. **Routes** — `src/api/<api-name>/routes/<api-name>.ts`
+3. **Services** — `src/api/<api-name>/services/<api-name>.ts`
+
+Sem esses tres arquivos, o content type **nao expoe** endpoints REST e **nao aparece** nas permissoes do API Token.
+
+## Padrao de implementacao
+
+Para cada content type em `cms/src/api/<nome>/` (ex.: `menu`, `post`, `page`, `category`):
+
+### Controller
+
+```ts
+// cms/src/api/<nome>/controllers/<nome>.ts
+import { factories } from '@strapi/strapi';
+
+export default factories.createCoreController('api::<singular>.<singular>');
+```
+
+Exemplo para `menu`: `factories.createCoreController('api::menu.menu')`.
+
+### Routes
+
+```ts
+// cms/src/api/<nome>/routes/<nome>.ts
+import { factories } from '@strapi/strapi';
+
+export default factories.createCoreRouter('api::<singular>.<singular>');
+```
+
+### Services
+
+```ts
+// cms/src/api/<nome>/services/<nome>.ts
+import { factories } from '@strapi/strapi';
+
+export default factories.createCoreService('api::<singular>.<singular>');
+```
+
+O UID do content type segue `api::<singularName>.<singularName>` (ex.: `api::menu.menu`, `api::post.post`). Conferir em `content-types/<nome>/schema.json` → `info.singularName`.
+
+## Checklist ao criar novo collection/single type
+
+- [ ] Schema em `src/api/<nome>/content-types/<nome>/schema.json`
+- [ ] Controller em `src/api/<nome>/controllers/<nome>.ts` (createCoreController)
+- [ ] Routes em `src/api/<nome>/routes/<nome>.ts` (createCoreRouter)
+- [ ] Services em `src/api/<nome>/services/<nome>.ts` (createCoreService)
+- [ ] Apos alteracoes: `npm run build` no `cms/`; se permissoes nao aparecerem, limpar `.cache`, `build`, `dist` e rebuildar
+- [ ] Em Settings → API Tokens → editar token → expandir **Users-permissions** e marcar `find`/`findOne` (ou outras) para o novo content type
+
+## Referencia no projeto
+
+- Exemplos completos: `cms/src/api/menu/`, `cms/src/api/post/`, `cms/src/api/page/`, `cms/src/api/category/`
+- Documentacao: `README-PROJETO.md` (secao Strapi), `cms/src/api/menu/README.md`

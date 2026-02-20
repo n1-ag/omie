@@ -5,7 +5,7 @@
 
 import type { PostListOptions } from '../types';
 
-const STRAPI_API_URL = process.env.STRAPI_API_URL ?? '';
+const STRAPI_API_URL = (process.env.STRAPI_API_URL ?? '').replace(/\/$/, '');
 const STRAPI_API_TOKEN = process.env.STRAPI_API_TOKEN ?? '';
 
 export async function fetchPostsFromStrapi(
@@ -14,7 +14,7 @@ export async function fetchPostsFromStrapi(
   const params = new URLSearchParams({
     'pagination[limit]': String(options?.limit ?? 10),
     'pagination[start]': String(options?.start ?? 0),
-    populate: 'featuredImage,category,author',
+    populate: 'featuredImage,category',
   });
   if (options?.category) {
     params.set('filters[category][slug][$eq]', options.category);
@@ -24,16 +24,27 @@ export async function fetchPostsFromStrapi(
     params.set('filters[$or][1][excerpt][$containsi]', options.search);
   }
 
-  const response = await fetch(`${STRAPI_API_URL}/api/posts?${params}`, {
+  const url = `${STRAPI_API_URL}/api/posts?${params}`;
+  const response = await fetch(url, {
     headers: {
       Authorization: `Bearer ${STRAPI_API_TOKEN}`,
+      'Strapi-Response-Format': 'v4',
     },
     next: { revalidate: 60 },
     signal: AbortSignal.timeout(10000),
   });
 
   if (!response.ok) {
-    throw new Error(`Strapi API error: ${response.status}`);
+    const body = await response.text();
+    let detail = body;
+    try {
+      const parsed = JSON.parse(body) as { error?: { message?: string }; message?: string };
+      detail = parsed.error?.message ?? parsed.message ?? body;
+    } catch {
+      // keep raw body
+    }
+    console.error('[Strapi posts]', response.status, url, detail);
+    throw new Error(`Strapi API error: ${response.status}. ${detail}`);
   }
 
   const json = (await response.json()) as { data?: StrapiPostResponse[] };
@@ -43,19 +54,29 @@ export async function fetchPostsFromStrapi(
 export async function fetchPostBySlug(slug: string): Promise<StrapiPostResponse | null> {
   const params = new URLSearchParams({
     'filters[slug][$eq]': slug,
-    populate: 'featuredImage,category,author',
+    populate: 'featuredImage,category',
   });
 
   const response = await fetch(`${STRAPI_API_URL}/api/posts?${params}`, {
     headers: {
       Authorization: `Bearer ${STRAPI_API_TOKEN}`,
+      'Strapi-Response-Format': 'v4',
     },
     next: { revalidate: 60 },
     signal: AbortSignal.timeout(10000),
   });
 
   if (!response.ok) {
-    throw new Error(`Strapi API error: ${response.status}`);
+    const body = await response.text();
+    let detail = body;
+    try {
+      const parsed = JSON.parse(body) as { error?: { message?: string }; message?: string };
+      detail = parsed.error?.message ?? parsed.message ?? body;
+    } catch {
+      // keep raw body
+    }
+    console.error('[Strapi post by slug]', response.status, detail);
+    throw new Error(`Strapi API error: ${response.status}. ${detail}`);
   }
 
   const json = (await response.json()) as { data?: StrapiPostResponse[] };
@@ -72,15 +93,25 @@ export async function fetchAllPostSlugs(): Promise<string[]> {
   const response = await fetch(`${STRAPI_API_URL}/api/posts?${params}`, {
     headers: {
       Authorization: `Bearer ${STRAPI_API_TOKEN}`,
+      'Strapi-Response-Format': 'v4',
     },
     next: { revalidate: 60 },
     signal: AbortSignal.timeout(10000),
   });
 
   if (!response.ok) {
-    throw new Error(`Strapi API error: ${response.status}`);
+    const body = await response.text();
+    let detail = body;
+    try {
+      const parsed = JSON.parse(body) as { error?: { message?: string }; message?: string };
+      detail = parsed.error?.message ?? parsed.message ?? body;
+    } catch {
+      // keep raw body
+    }
+    console.error('[Strapi post slugs]', response.status, detail);
+    throw new Error(`Strapi API error: ${response.status}. ${detail}`);
   }
-
+fasdfasdfa
   const json = (await response.json()) as { data?: { id: number; attributes?: { slug?: string } }[] };
   const items = json.data ?? [];
   return items
@@ -88,7 +119,6 @@ export async function fetchAllPostSlugs(): Promise<string[]> {
     .filter((s): s is string => Boolean(s));
 }
 
-/** Resposta bruta do Strapi (v4 style); ajustar conforme seu Strapi. */
 export interface StrapiPostResponse {
   id: number;
   attributes?: {
@@ -104,8 +134,6 @@ export interface StrapiPostResponse {
     category?: {
       data?: { attributes?: { name?: string; slug?: string } };
     };
-    author?: {
-      data?: { attributes?: { name?: string } };
-    };
+    author?: string | { data?: { attributes?: { name?: string } } };
   };
 }

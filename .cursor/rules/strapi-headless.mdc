@@ -89,8 +89,13 @@ STRAPI_MOCK=true   # desenvolvimento sem Strapi rodando
 - Implementar Next.js Draft Mode para editores previsualizarem conteudo nao publicado
 - Rota de API `/api/preview` para ativar draft mode com token de seguranca (`STRAPI_PREVIEW_SECRET`)
 
+## CMS Backend — Collection Types
+
+Ao criar ou editar collection types no Strapi (pasta `cms/`), sempre incluir **controller**, **routes** e **services** alem do schema; senao as rotas REST nao sao registradas e o type nao aparece em API Tokens. Ver regra dedicada: `.cursor/rules/strapi-cms-collection-types.mdc`.
+
 ## Padroes Detalhados
 
 Para guidelines completas, consulte:
-- `docs/INTEGRATION-PATTERNS.md` — anti-corruption layer, mock clients, resilience, cache/ISR, preview mode
+- `docs/INTEGRATION-PATTERNS.md` — anti-corruption layer, estrutura CMS (controller/routes/services), mock clients, resilience, cache/ISR, preview mode
 - `docs/CODING-PATTERNS.md` — CMS API leakage prevention, data fetching patterns, lean page components
+- `.cursor/rules/strapi-cms-collection-types.mdc` — checklist ao criar collection/single types no Strapi

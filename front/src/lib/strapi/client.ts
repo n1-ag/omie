@@ -5,7 +5,7 @@
 
 import { fetchPostsFromStrapi, fetchPostBySlug, fetchAllPostSlugs } from './api/posts';
 import { fetchPageBySlug } from './api/pages';
-import { fetchMenuBySlug } from './api/menus';
+import { fetchAllMenusFromStrapi } from './api/menus';
 import { transformPost, transformPage, transformMenu } from './transformers';
 import type { Post, Page, PostListOptions, Menus } from './types';
 
@@ -56,13 +56,14 @@ async function getPageFromAPI(slug: string): Promise<Page | null> {
 async function getMenusFromAPI(): Promise<Menus> {
   const fallback: Menus = { header: [], footer: [] };
   try {
-    const [headerRaw, footerRaw] = await Promise.all([
-      fetchMenuBySlug('header').catch(() => null),
-      fetchMenuBySlug('footer').catch(() => null),
-    ]);
+    const list = await fetchAllMenusFromStrapi();
+    const bySlug = (slug: string) =>
+      list.find(
+        (m) => (m.attributes?.slug ?? m.slug ?? '').toLowerCase() === slug.toLowerCase()
+      ) ?? null;
     return {
-      header: transformMenu(headerRaw),
-      footer: transformMenu(footerRaw),
+      header: transformMenu(bySlug('header')),
+      footer: transformMenu(bySlug('footer')),
     };
   } catch (error) {
     console.error('Failed to fetch menus from Strapi:', error);

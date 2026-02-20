@@ -5,7 +5,7 @@
 import type { Post } from './types';
 import type { StrapiPostResponse } from './api/posts';
 import type { StrapiPageResponse } from './api/pages';
-import type { StrapiMenuResponse } from './api/menus';
+import type { StrapiMenuResponse, StrapiMenuItemRaw } from './api/menus';
 import type { Page, MenuItem } from './types';
 
 function stripHtmlTags(html: string): string {
@@ -25,7 +25,7 @@ function resolveMediaUrl(
 ): string {
   const url = data?.data?.attributes?.url;
   if (!url) return '';
-  const base = process.env.STRAPI_API_URL ?? '';
+  const base = (process.env.STRAPI_API_URL ?? '').replace(/\/$/, '');
   return url.startsWith('http') ? url : `${base}${url}`;
 }
 
@@ -41,7 +41,10 @@ export function transformPost(raw: StrapiPostResponse): Post {
     featuredImage: resolveMediaUrl(attrs.featuredImage),
     category: attrs.category?.data?.attributes?.name ?? '',
     categorySlug: attrs.category?.data?.attributes?.slug ?? '',
-    author: attrs.author?.data?.attributes?.name ?? 'OMIE',
+    author:
+      typeof attrs.author === 'string'
+        ? attrs.author
+        : (attrs.author as { data?: { attributes?: { name?: string } } } | undefined)?.data?.attributes?.name ?? 'OMIE',
   };
 }
 
@@ -56,22 +59,24 @@ export function transformPage(raw: StrapiPageResponse): Page {
   };
 }
 
-function transformMenuItem(
-  item: { id?: number; label?: string; url?: string; children?: Array<{ id?: number; label?: string; url?: string }> }
-): MenuItem {
+function transformMenuItem(item: StrapiMenuItemRaw): MenuItem {
+  const id = item.documentId ?? String(item.id ?? '');
   return {
-    id: String(item.id ?? ''),
+    id: id || String(Math.random()),
     label: item.label ?? '',
     url: item.url ?? '#',
-    children: item.children?.map((c) => ({
-      id: String(c.id ?? ''),
-      label: c.label ?? '',
-      url: c.url ?? '#',
-    })),
+    children: item.children?.length ? item.children.map(transformMenuItem) : undefined,
   };
 }
 
+function getMenuItems(raw: StrapiMenuResponse | null): StrapiMenuItemRaw[] | undefined {
+  if (!raw) return undefined;
+  const items = raw.items ?? raw.attributes?.items;
+  return Array.isArray(items) && items.length > 0 ? items : undefined;
+}
+
 export function transformMenu(raw: StrapiMenuResponse | null): MenuItem[] {
-  if (!raw?.attributes?.items?.length) return [];
-  return raw.attributes.items.map(transformMenuItem);
+  const items = getMenuItems(raw);
+  if (!items) return [];
+  return items.map(transformMenuItem);
 }
