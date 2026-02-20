@@ -111,7 +111,7 @@ export async function fetchAllPostSlugs(): Promise<string[]> {
     console.error('[Strapi post slugs]', response.status, detail);
     throw new Error(`Strapi API error: ${response.status}. ${detail}`);
   }
-fasdfasdfa
+
   const json = (await response.json()) as { data?: { id: number; attributes?: { slug?: string } }[] };
   const items = json.data ?? [];
   return items
