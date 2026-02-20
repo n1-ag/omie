@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Builds and output
+**/dist/
+**/.next/
+**/out/
+**/build/
+**/.strapi/
+
+# Env and secrets (use .env.example as template)
+.env
+.env.local
+.env.*.local
+cms/.env
+
+# Backup folder (temporary)
+front_backup/
+
+# IDE / OS
+.DS_Store
+*.log
+.vercel/
+nul
+
+# Next.js
+next-env.d.ts
+*.tsbuildinfo

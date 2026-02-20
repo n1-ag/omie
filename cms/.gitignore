@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+
+# Build
+dist/
+build/
+
+# Strapi
+.strapi/
+*.tmp
+
+# Env (use .env.example as template)
+.env
+.env.*
+!.env.example
+
+# Logs and cache
+*.log
+.cache/

@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #001e27;
+  --petroleo: #001e27;
+  --ciano: #00e2f4;
+  --lima: #d8fe00;
+  --accent-blog: #6ec1e4;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-poppins), Arial, Helvetica, sans-serif;
+}
+
+/* Design System: section padding mobile → desktop → wide */
+.section-padding {
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+@media (min-width: 768px) {
+  .section-padding {
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+  }
+}
+@media (min-width: 1280px) {
+  .section-padding {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+  }
+}
