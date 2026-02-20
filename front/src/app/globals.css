@@ -1,17 +1,58 @@
 @import "tailwindcss";
 
+/* ── Design System OMIE: variáveis de cor (evitar cores personalizadas nos componentes) ── */
 :root {
-  --background: #ffffff;
-  --foreground: #001e27;
+  /* Marca */
   --petroleo: #001e27;
+  --petroleo-claro: #00353f;
   --ciano: #00e2f4;
   --lima: #d8fe00;
-  --accent-blog: #6ec1e4;
+  --laranja: #ff601f;
+  --roxo: #5e16ff;
+  --azul-gclick: #a4f6fc;
+
+  /* Neutros e fundos */
+  --background: #ffffff;
+  --foreground: #001e27;
+  --cinza-claro: #f7f7f7;
+  --cinza-escuro: #eceeee;
+  --borda: #dbdfde;
+  --blue-tint: #f9fbff;
+
+  /* Texto */
+  --texto-principal: #001e27;
+  --texto-secundario: rgba(0, 30, 39, 0.6);
+  --blog-heading: #131313;
+  --blog-category: #6ec1e4;
+  --blog-meta: #515151;
+  --nav-dropdown-desc: #677489;
+
+  /* CTA shadows (hover) */
+  --shadow-ciano: rgba(0, 226, 244, 0.6);
+  --shadow-petroleo: rgba(0, 30, 39, 0.4);
+  --shadow-card: rgba(0, 30, 39, 0.1);
+  --shadow-card-strong: rgba(0, 30, 39, 0.15);
+
+  /* Aliases para compatibilidade */
+  --accent-blog: var(--blog-category);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-petroleo: var(--petroleo);
+  --color-petroleo-claro: var(--petroleo-claro);
+  --color-ciano: var(--ciano);
+  --color-lima: var(--lima);
+  --color-laranja: var(--laranja);
+  --color-roxo: var(--roxo);
+  --color-azul-gclick: var(--azul-gclick);
+  --color-cinza-claro: var(--cinza-claro);
+  --color-cinza-escuro: var(--cinza-escuro);
+  --color-borda: var(--borda);
+  --color-blue-tint: var(--blue-tint);
+  --color-blog-category: var(--blog-category);
+  --color-blog-meta: var(--blog-meta);
   --font-sans: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
 }
 

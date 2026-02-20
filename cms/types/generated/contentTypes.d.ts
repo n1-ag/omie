@@ -509,6 +509,7 @@ export interface ApiPagePage extends Struct.CollectionTypeSchema {
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::page.page'> &
       Schema.Attribute.Private;
     publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
     slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;
     title: Schema.Attribute.String & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
@@ -541,8 +542,54 @@ export interface ApiPostPost extends Struct.CollectionTypeSchema {
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::post.post'> &
       Schema.Attribute.Private;
     publishedAt: Schema.Attribute.DateTime;
+    seo: Schema.Attribute.Component<'shared.seo', false>;
     slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;
     title: Schema.Attribute.String & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiSiteConfigSiteConfig extends Struct.SingleTypeSchema {
+  collectionName: 'site_configs';
+  info: {
+    description: 'Configura\u00E7\u00F5es globais: logo, favicon, t\u00EDtulo, analytics';
+    displayName: 'Configura\u00E7\u00E3o do Site';
+    pluralName: 'site-configs';
+    singularName: 'site-config';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    codigoGoogleAnalytics: Schema.Attribute.String;
+    codigoGoogleTagManager: Schema.Attribute.String;
+    codigoVerificacaoGoogle: Schema.Attribute.Text;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    descricao: Schema.Attribute.Text &
+      Schema.Attribute.DefaultTo<'Sistema de gest\u00E3o ERP online para PMEs e grandes empresas. Contabilidade, financeiro e mais.'>;
+    favicon: Schema.Attribute.Media<'images'>;
+    imagemRedesSociais: Schema.Attribute.Media<'images'>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::site-config.site-config'
+    > &
+      Schema.Attribute.Private;
+    logo: Schema.Attribute.Media<'images'>;
+    organizationStructuredData: Schema.Attribute.Component<
+      'shared.organization-structured-data',
+      false
+    >;
+    publishedAt: Schema.Attribute.DateTime;
+    textoAlternativoLogo: Schema.Attribute.String &
+      Schema.Attribute.DefaultTo<'OMIE - Sistema de Gest\u00E3o ERP'>;
+    titulo: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'OMIE | Sistema de Gest\u00E3o ERP Online'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1064,6 +1111,7 @@ declare module '@strapi/strapi' {
       'api::menu.menu': ApiMenuMenu;
       'api::page.page': ApiPagePage;
       'api::post.post': ApiPostPost;
+      'api::site-config.site-config': ApiSiteConfigSiteConfig;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;

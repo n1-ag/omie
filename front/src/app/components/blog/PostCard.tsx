@@ -23,21 +23,21 @@ export function PostCard({ post }: PostCardProps) {
           />
         </Link>
       ) : (
-        <div className="aspect-video w-full bg-[#f7f7f7]" aria-hidden />
+        <div className="aspect-video w-full bg-cinza-claro" aria-hidden />
       )}
-      <div className="border-l-[3px] border-[#6EC1E4] p-4">
-        <span className="text-xs font-semibold uppercase text-[#6EC1E4]">
+      <div className="border-l-[3px] border-blog-category p-4">
+        <span className="text-xs font-semibold uppercase text-blog-category">
           {post.category}
         </span>
-        <time className="mt-1 block text-xs text-[#001e27]/60" dateTime={post.date}>
+        <time className="mt-1 block text-xs text-foreground/60" dateTime={post.date}>
           {post.date}
         </time>
-        <h2 id={`post-title-${post.id}`} className="mt-2 text-lg font-bold text-[#001e27]">
+        <h2 id={`post-title-${post.id}`} className="mt-2 text-lg font-bold text-foreground">
           <Link href={`/blog/${post.slug}`} className="hover:underline">
             {post.title}
           </Link>
         </h2>
-        <p className="mt-2 line-clamp-2 text-sm text-[#001e27]/80">{post.excerpt}</p>
+        <p className="mt-2 line-clamp-2 text-sm text-foreground/80">{post.excerpt}</p>
       </div>
     </article>
   );

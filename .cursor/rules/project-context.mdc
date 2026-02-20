@@ -7,7 +7,7 @@ alwaysApply: true
 ## Stack
 
 - **Frontend**: Next.js 16 (App Router) + React 19 + TypeScript 5 (strict)
-- **Styling**: Tailwind CSS v4 (tokens mapeados do Design System OMIE)
+- **Styling**: Tailwind CSS v4 (tokens mapeados do Design System OMIE) — **prioridade maxima** para todo estilo; evitar CSS custom e `style` inline
 - **CMS**: Strapi headless (REST API / GraphQL opcional) — somente gestao de conteudo, sem renderizacao
 - **Linguagem de conteudo**: Portugues do Brasil
 - **Linguagem de codigo**: Ingles (variaveis, funcoes, componentes, commits)

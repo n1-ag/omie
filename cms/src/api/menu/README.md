@@ -17,4 +17,4 @@ Depois de reiniciar o Strapi com a estrutura acima, em **Settings → API Tokens
 - `find` (lista de menus)
 - `findOne` (um menu por id/documentId)
 
-Sem isso, a API responde **404** para `/api/menus`. Ver também `README-PROJETO.md` na raiz do repositório.
+Sem isso, a API responde **404** para `/api/menus`. Ver também `README.md` na raiz do repositório.

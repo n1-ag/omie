@@ -1,61 +1,76 @@
-## Descricao
+# 📋 Pull Request
+
+## 📝 Descrição
 
 <!-- Descreva o que foi alterado e o motivo. Seja objetivo. -->
 
-## Tipo de mudanca
+---
 
-- [ ] `feat` — Nova funcionalidade
-- [ ] `fix` — Correcao de bug
-- [ ] `docs` — Alteracao em documentacao
-- [ ] `refactor` — Refatoracao (sem mudanca de comportamento)
-- [ ] `style` — Ajuste de estilo (formato, lint, etc.)
-- [ ] `chore` — Manutencao, configuracao, deps
-- [ ] `perf` — Melhoria de performance
+## 🏷️ Tipo de mudança
 
-## Areas afetadas
+- [ ] ✨ `feat` — Nova funcionalidade
+- [ ] 🐛 `fix` — Correção de bug
+- [ ] 📚 `docs` — Alteração em documentação
+- [ ] 🔧 `refactor` — Refatoração (sem mudança de comportamento)
+- [ ] 💄 `style` — Ajuste de estilo (formato, lint, etc.)
+- [ ] 🧹 `chore` — Manutenção, configuração, deps
+- [ ] ⚡ `perf` — Melhoria de performance
+
+---
+
+## 📂 Áreas afetadas
 
 - [ ] `front/` — Next.js (App Router, componentes, lib)
 - [ ] `cms/` — Strapi (content-types, controllers, services)
-- [ ] `docs/` — Documentacao de arquitetura
+- [ ] `docs/` — Documentação de arquitetura
 - [ ] Outro: ___
 
-## Issue relacionada
+---
+
+## 🔗 Issue relacionada
 
 <!-- Ex.: Fixes #123 ou Relacionado a #456 -->
 
-## Checklist
+---
 
-### Build e Lint
+## ✅ Checklist
+
+### 🛠️ Build e Lint
 
 - [ ] `cd front && npm run build` — passa sem erros
 - [ ] `cd front && npm run lint` — passa sem warnings/erros
-- [ ] `cd cms && npm run build` — passa sem erros (se alterou o CMS)
+- [ ] `cd cms && npm run build` — passa sem erros *(se alterou o CMS)*
 
-### Codigo (ver [IMPLEMENTATION-CHECKLIST.md](docs/IMPLEMENTATION-CHECKLIST.md))
+### 💻 Código *(ver [IMPLEMENTATION-CHECKLIST.md](docs/IMPLEMENTATION-CHECKLIST.md))*
 
 - [ ] Sem `any` em tipos/props
-- [ ] Componentes so importam de `lib/*/client.ts` e `lib/*/types.ts` (anti-corruption layer)
+- [ ] Componentes só importam de `lib/*/client.ts` e `lib/*/types.ts` *(anti-corruption layer)*
 - [ ] Sem `fetch` direto para Strapi em componentes
-- [ ] URLs e tokens em variaveis de ambiente (nunca hardcoded)
-- [ ] Sem `'use client'` desnecessario (Server Component por padrao)
+- [ ] URLs e tokens em variáveis de ambiente *(nunca hardcoded)*
+- [ ] Sem `'use client'` desnecessário *(Server Component por padrão)*
 
-### Visual (se houver alteracao de UI)
+### 🎨 Visual *(se houver alteração de UI)*
 
 - [ ] Componentes consultam `site/design-system.html` e seguem os tokens
-- [ ] Tailwind classes utilizadas (sem `style` inline)
-- [ ] Responsivo testado (mobile, tablet, desktop)
-- [ ] Screenshots ou GIFs anexados abaixo (quando aplicavel)
+- [ ] Variáveis de cor utilizadas *(text-foreground, bg-ciano, etc.)* — sem hex direto
+- [ ] Tailwind classes utilizadas *(sem `style` inline)*
+- [ ] Responsivo testado *(mobile, tablet, desktop)*
+- [ ] Screenshots ou GIFs anexados abaixo *(quando aplicável)*
 
-### Integracao (se houver nova API ou alteracao em `lib/strapi/`)
+### 🔌 Integração *(se houver nova API ou alteração em `lib/strapi/`)*
 
 - [ ] Nova pasta em `lib/<nome>/` com client, types e transformers
 - [ ] Timeout e tratamento de erro configurados
-- [ ] Variaveis de ambiente documentadas em `.env.example`
+- [ ] Variáveis de ambiente documentadas em `.env.example`
 
-## Screenshots / Preview
+---
 
-<!-- Anexe imagens ou GIFs quando houver mudancas visuais. -->
+## 📸 Screenshots / Preview
 
-## Notas adicionais
+<!-- Anexe imagens ou GIFs quando houver mudanças visuais. -->
 
-<!-- Consideracoes para reviewers, breaking changes, migracoes, etc. -->
+---
+
+## 📌 Notas adicionais
+
+<!-- Considerações para reviewers, breaking changes, migrações, etc. -->

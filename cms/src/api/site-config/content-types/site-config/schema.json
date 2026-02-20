@@ -1,0 +1,59 @@
+{
+  "kind": "singleType",
+  "collectionName": "site_configs",
+  "info": {
+    "singularName": "site-config",
+    "pluralName": "site-configs",
+    "displayName": "Configuração do Site",
+    "description": "Configurações globais: logo, favicon, título, analytics"
+  },
+  "options": {},
+  "pluginOptions": {},
+  "attributes": {
+    "titulo": {
+      "type": "string",
+      "default": "OMIE | Sistema de Gestão ERP Online",
+      "required": true
+    },
+    "descricao": {
+      "type": "text",
+      "default": "Sistema de gestão ERP online para PMEs e grandes empresas. Contabilidade, financeiro e mais."
+    },
+    "logo": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "textoAlternativoLogo": {
+      "type": "string",
+      "default": "OMIE - Sistema de Gestão ERP"
+    },
+    "favicon": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "imagemRedesSociais": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "codigoGoogleAnalytics": {
+      "type": "string"
+    },
+    "codigoGoogleTagManager": {
+      "type": "string"
+    },
+    "codigoVerificacaoGoogle": {
+      "type": "text"
+    },
+    "organizationStructuredData": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.organization-structured-data"
+    }
+  }
+}

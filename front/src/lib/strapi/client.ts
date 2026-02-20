@@ -6,8 +6,14 @@
 import { fetchPostsFromStrapi, fetchPostBySlug, fetchAllPostSlugs } from './api/posts';
 import { fetchPageBySlug } from './api/pages';
 import { fetchAllMenusFromStrapi } from './api/menus';
-import { transformPost, transformPage, transformMenu } from './transformers';
-import type { Post, Page, PostListOptions, Menus } from './types';
+import { fetchSiteConfigFromStrapi } from './api/site-config';
+import {
+  transformPost,
+  transformPage,
+  transformMenu,
+  transformSiteConfig,
+} from './transformers';
+import type { Post, Page, PostListOptions, Menus, SiteConfig } from './types';
 
 const USE_MOCK =
   process.env.STRAPI_MOCK === 'true' || !process.env.STRAPI_API_URL;
@@ -50,6 +56,16 @@ async function getPageFromAPI(slug: string): Promise<Page | null> {
   } catch (error) {
     console.error('Failed to fetch page from Strapi:', error);
     return null;
+  }
+}
+
+async function getSiteConfigFromAPI(): Promise<SiteConfig> {
+  try {
+    const raw = await fetchSiteConfigFromStrapi();
+    return transformSiteConfig(raw);
+  } catch (error) {
+    console.error('Failed to fetch site config from Strapi:', error);
+    return transformSiteConfig(null);
   }
 }
 
@@ -111,4 +127,22 @@ export async function getMenus(): Promise<Menus> {
   return getMenusFromAPI();
 }
 
-export type { Post, Page, Category, MenuItem, Menu, Menus, PostListOptions } from './types';
+export async function getSiteConfig(): Promise<SiteConfig> {
+  if (USE_MOCK) {
+    const { getSiteConfigMock } = await import('./client.mock');
+    return getSiteConfigMock();
+  }
+  return getSiteConfigFromAPI();
+}
+
+export type {
+  Post,
+  Page,
+  Category,
+  MenuItem,
+  Menu,
+  Menus,
+  PostListOptions,
+  SiteConfig,
+  SeoData,
+} from './types';

@@ -9,6 +9,7 @@ Checklists praticas para garantir qualidade e consistencia em cada tipo de taref
 **When to use this doc**: Starting a new feature, creating components, or before committing
 
 **Key rules**:
+- **Tailwind e prioridade maxima** — estilizar ao maximo com classes Tailwind; CSS custom so em ultimo recurso
 - Seguir a checklist correspondente ao tipo de tarefa
 - Validar contra o Design System antes de finalizar
 - Rodar `npm run build` e `npm run lint` antes de commitar
@@ -81,7 +82,8 @@ Ao criar um componente visual reutilizavel (`app/components/`):
 ### Design System Compliance
 
 - [ ] Consultar `site/design-system.html` antes de implementar
-- [ ] Cores usadas existem na paleta do DS
+- [ ] **Sempre usar variaveis de cor** (`text-foreground`, `bg-ciano`, etc.) — nunca hex direto
+- [ ] Cores usadas existem na paleta do DS (ver `front/src/app/globals.css`)
 - [ ] Tipografia segue os tokens do DS (fonte, tamanho, peso)
 - [ ] Border-radius conforme tokens: 8px (card), 12px (card-hover), 40px (button)
 - [ ] Espacamento conforme padroes do DS
@@ -90,7 +92,7 @@ Ao criar um componente visual reutilizavel (`app/components/`):
 
 - [ ] Server Component por padrao (Client Component apenas se tiver interatividade)
 - [ ] Props tipadas com interface
-- [ ] Tailwind classes (sem CSS custom ou `style` inline desnecessario)
+- [ ] **Tailwind priorizado ao maximo** — classes utilitarias primeiro; CSS custom ou `style` inline so quando necessario
 - [ ] Variantes definidas via props (nao via classes condicionais espalhadas)
 
 ### Interacao
@@ -194,11 +196,11 @@ Antes de cada commit, verificar:
 
 ### Codigo
 
+- [ ] **Tailwind priorizado** — estilos via classes Tailwind; CSS custom/`style` inline so em ultimo recurso
 - [ ] Sem `any` em tipos
 - [ ] Sem `'use client'` desnecessario
 - [ ] Sem `fetch` direto para Strapi em componentes
 - [ ] Sem URLs hardcoded
-- [ ] Sem `style` inline (usar Tailwind)
 
 ### Anti-Corruption Layer
 
@@ -225,7 +227,7 @@ Antes de cada commit, verificar:
 |---|---|
 | `'use client'` sem interatividade | Server Component (padrao) |
 | Logica de negocio na page | Encapsular em `lib/` |
-| `style` inline | Tailwind classes |
+| `style` inline ou CSS custom quando Tailwind resolve | **Priorizar Tailwind** — classes utilitarias |
 | Cor fora do Design System | Usar cores do DS |
 | `<img>` nativo | `next/image` |
 
@@ -254,7 +256,8 @@ Checklist visual para garantir compliance com `site/design-system.html`:
 
 ### Cores
 
-- [ ] Background padrao: `#ffffff` ou `#f7f7f7`
+- [ ] Background padrao: `bg-background` ou `bg-cinza-claro`
+- [ ] Nenhum hex direto nos componentes — sempre variaveis do globals.css
 - [ ] Nenhuma cor fora da paleta do DS
 - [ ] Gradientes conforme especificado no DS
 
