@@ -16,26 +16,34 @@ Este documento descreve como subir a **base do Strapi CMS** e o **frontend Next.
 
 ### Instalação e primeiro uso
 
-O projeto já contém a pasta `cms/` criada com Strapi 5 e os content-types definidos em schema:
+O projeto já contém a pasta `cms/` criada com Strapi 5 e os content-types definidos em schema, com **controllers**, **routes** e **services** (obrigatórios para as rotas REST e para aparecer em API Tokens → Token permissions):
 
 - **Post** — blog (title, slug, excerpt, content, featuredImage, category, author)
 - **Category** — categorias do blog (name, slug, posts)
 - **Page** — páginas institucionais (title, slug, content, featuredImage)
-- **Menu** — menus de navegação (slug: `header` | `footer`, items: JSON)
+- **Menu** — menus de navegação (slug: `header` | `footer`, items: componente repeatable)
 
 ```bash
 cd cms
 npm install   # se ainda não instalou
+npm run build # rebuild para carregar controllers/routes/services
 npm run develop
 ```
+
+**Nota:** Se Menu, Post, Page, Category não aparecerem em API Tokens → Token permissions, apague `.cache`, `build` e `dist`, rode `npm run build` e reinicie o Strapi.
 
 Na primeira execução:
 
 1. Crie o primeiro usuário admin (email e senha).
 2. Em **Content-Type Builder** (ou já criados via schemas em `src/api/`), confira Post, Category, Page, Menu.
 3. Em **Settings → API Tokens**, crie um token (Full access ou apenas leitura para os content-types) e copie o valor.
+4. **Importante**: ao criar ou editar o token, marque as permissões para cada content-type que o front vai consumir:
+   - **Menu** — pelo menos `find` e `findOne` (senão `/api/menus` retorna 404).
+   - **Post** — `find`, `findOne`.
+   - **Page** — `find`, `findOne`.
+   - **Category** — `find`, `findOne` (se o front popular categorias nos posts).
 
-O Strapi ficará em `http://localhost:1337`. A API REST está em `http://localhost:1337/api/posts`, `/api/pages`, etc.
+O Strapi ficará em `http://localhost:1337`. A API REST está em `http://localhost:1337/api/posts`, `/api/pages`, `/api/menus`, etc.
 
 ### CMS hospedado em outro local (ex.: Strapi Cloud)
 
@@ -43,6 +51,25 @@ O frontend **não exige** que o Strapi rode na mesma máquina. Basta apontar as 
 
 - **Strapi Cloud**: após criar o projeto em [cloud.strapi.io](https://cloud.strapi.io), use a URL da API (ex.: `https://seu-projeto.strapiapp.com`) e um API Token gerado no painel.
 - **Outro servidor**: use a URL base da API (ex.: `https://cms.seudominio.com`).
+
+#### Permissões do API Token (obrigatório no Strapi Cloud)
+
+No Strapi, **todos os content-types são privados por padrão**. Se o token não tiver permissão para um content-type, a API devolve **404** para esse endpoint (ex.: `/api/menus`).
+
+Depois de fazer deploy (ex.: Strapi Cloud):
+
+1. Acesse o **Admin** do Strapi (ex.: `https://orderly-ducks-540238bfe6.strapiapp.com/admin`).
+2. Vá em **Settings** (engrenagem) → **API Tokens**.
+3. Crie um token ou edite o token que o front usa.
+4. Em **Token type**, escolha "Read-only" (só leitura) ou "Full access" conforme necessário.
+5. Em **Token permissions**, habilite para cada content-type que o front consome:
+   - **Menu**: `find`, `findOne`
+   - **Post**: `find`, `findOne`
+   - **Page**: `find`, `findOne`
+   - **Category**: `find`, `findOne`
+6. Salve e use o token em `STRAPI_API_TOKEN` no `front/.env` ou `.env.local`.
+
+Sem essas permissões, o health check em `/api/strapi-health` continuará com `ok: false` e `strapi.status: 404` para menus.
 
 No `front/.env.local`:
 
@@ -79,7 +106,12 @@ O schema atual do Menu está em `cms/src/api/menu/content-types/menu/schema.json
 
 ### Variáveis de ambiente
 
-Na pasta `front/`, crie `.env.local` (se existir `.env.example`, use `cp .env.example .env.local`; caso contrário, crie o arquivo manualmente com as variáveis abaixo).
+Na pasta `front/`, crie `.env.local` a partir do exemplo:
+
+```bash
+cd front
+cp .env.example .env.local
+```
 
 Edite `.env.local`:
 

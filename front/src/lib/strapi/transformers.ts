@@ -25,7 +25,7 @@ function resolveMediaUrl(
 ): string {
   const url = data?.data?.attributes?.url;
   if (!url) return '';
-  const base = process.env.STRAPI_API_URL ?? '';
+  const base = (process.env.STRAPI_API_URL ?? '').replace(/\/$/, '');
   return url.startsWith('http') ? url : `${base}${url}`;
 }
 
@@ -41,7 +41,10 @@ export function transformPost(raw: StrapiPostResponse): Post {
     featuredImage: resolveMediaUrl(attrs.featuredImage),
     category: attrs.category?.data?.attributes?.name ?? '',
     categorySlug: attrs.category?.data?.attributes?.slug ?? '',
-    author: attrs.author?.data?.attributes?.name ?? 'OMIE',
+    author:
+      typeof attrs.author === 'string'
+        ? attrs.author
+        : (attrs.author as { data?: { attributes?: { name?: string } } } | undefined)?.data?.attributes?.name ?? 'OMIE',
   };
 }
 

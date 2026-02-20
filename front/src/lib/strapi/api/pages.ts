@@ -3,7 +3,7 @@
  * Uso interno da ACL; componentes nunca importam daqui.
  */
 
-const STRAPI_API_URL = process.env.STRAPI_API_URL ?? '';
+const STRAPI_API_URL = (process.env.STRAPI_API_URL ?? '').replace(/\/$/, '');
 const STRAPI_API_TOKEN = process.env.STRAPI_API_TOKEN ?? '';
 
 export async function fetchPageBySlug(slug: string): Promise<StrapiPageResponse | null> {
@@ -15,6 +15,7 @@ export async function fetchPageBySlug(slug: string): Promise<StrapiPageResponse 
   const response = await fetch(`${STRAPI_API_URL}/api/pages?${params}`, {
     headers: {
       Authorization: `Bearer ${STRAPI_API_TOKEN}`,
+      'Strapi-Response-Format': 'v4',
     },
     next: { revalidate: 300 },
     signal: AbortSignal.timeout(10000),
