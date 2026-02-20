@@ -42,10 +42,13 @@ export default async function BlogPage() {
 - Tipos do Strapi centralizados em `lib/strapi/types.ts`
 - Nunca usar `any` — preferir `unknown` quando necessario e fazer type narrowing
 
-## Tailwind CSS v4
+## Tailwind CSS v4 — Prioridade maxima para estilizacao
+
+**Tailwind e a prioridade #1 para todo estilo.** Sempre que possivel, implemente com classes Tailwind. CSS custom e `style` inline so quando o Tailwind nao resolver.
 
 - Usar tokens do Design System mapeados (ver rule `design-system.mdc`)
-- Preferir classes utilitarias Tailwind — evitar CSS custom ou `style` inline
+- **Sempre** usar variaveis de cor (text-foreground, bg-ciano, etc.) — nunca hex direto (`text-[#001e27]`)
+- **Priorizar** classes utilitarias Tailwind ao maximo — evitar CSS custom ou `style` inline
 - Responsividade mobile-first: classes base para mobile, prefixos `md:`, `lg:`, `xl:` para breakpoints maiores
 
 ## Imagens
@@ -92,12 +95,14 @@ front/
 
 - **NAO** usar `'use client'` sem necessidade real de interatividade
 - **NAO** fazer fetch direto de APIs em componentes — usar `lib/`
-- **NAO** usar `style` inline — usar Tailwind
-- **NAO** criar CSS custom quando Tailwind resolve
+- **NAO** usar `style` inline — usar Tailwind (prioridade maxima)
+- **NAO** criar CSS custom — Tailwind resolve primeiro; CSS so em ultimo recurso
 - **NAO** ignorar o Design System — sempre validar contra `site/design-system.html`
 - **NAO** usar `img` nativo — usar `next/image`
 
 ## Padroes Detalhados
+
+Para performance (PageSpeed, SSR), consulte `docs/PAGESPEED-PERFORMANCE.md`.
 
 Para guidelines completas, consulte:
 - `docs/ARCHITECTURE-OVERVIEW.md` — visao geral, decisoes arquiteturais, decision tree

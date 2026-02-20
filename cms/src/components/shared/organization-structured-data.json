@@ -1,0 +1,54 @@
+{
+  "collectionName": "components_shared_organization_structured_data",
+  "info": {
+    "displayName": "Dados estruturados — Organization",
+    "icon": "file",
+    "description": "JSON-LD completo para schema.org (Organization, WebSite). Aceita @graph ou formato simples { name, url, sameAs }."
+  },
+  "attributes": {
+    "organizationJson": {
+      "type": "json",
+      "default": {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://www.omie.com.br/#organization",
+            "name": "Omie",
+            "url": "https://www.omie.com.br/",
+            "logo": "https://www.omie.com.br/assets/images/logo-omie.png",
+            "description": "Omie combina sistema de gestão online, serviços financeiros e educação empreendedora para impulsionar contadores e empresas de todos os portes.",
+            "telephone": "0800 942 7592",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "Av. Jurubatuba, 460",
+              "addressLocality": "Brooklin",
+              "addressRegion": "SP",
+              "postalCode": "04583-100",
+              "addressCountry": "BR"
+            },
+            "sameAs": [
+              "https://www.instagram.com/omieoficial/",
+              "https://www.facebook.com/omieoficial",
+              "https://www.linkedin.com/company/omie/",
+              "https://www.youtube.com/user/omiexperience"
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://www.omie.com.br/#website",
+            "url": "https://www.omie.com.br/",
+            "name": "Omie",
+            "publisher": { "@id": "https://www.omie.com.br/#organization" },
+            "inLanguage": "pt-BR",
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": "https://www.omie.com.br/blog/?s={search_term_string}",
+              "query-input": "required name=search_term_string"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

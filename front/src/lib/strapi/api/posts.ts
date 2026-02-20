@@ -14,7 +14,7 @@ export async function fetchPostsFromStrapi(
   const params = new URLSearchParams({
     'pagination[limit]': String(options?.limit ?? 10),
     'pagination[start]': String(options?.start ?? 0),
-    populate: 'featuredImage,category',
+    populate: 'featuredImage,category,seo',
   });
   if (options?.category) {
     params.set('filters[category][slug][$eq]', options.category);
@@ -54,7 +54,7 @@ export async function fetchPostsFromStrapi(
 export async function fetchPostBySlug(slug: string): Promise<StrapiPostResponse | null> {
   const params = new URLSearchParams({
     'filters[slug][$eq]': slug,
-    populate: 'featuredImage,category',
+    populate: 'featuredImage,category,seo',
   });
 
   const response = await fetch(`${STRAPI_API_URL}/api/posts?${params}`, {
@@ -119,6 +119,13 @@ export async function fetchAllPostSlugs(): Promise<string[]> {
     .filter((s): s is string => Boolean(s));
 }
 
+export interface StrapiSeoComponent {
+  metaTitle?: string;
+  metaDescription?: string;
+  canonicalUrl?: string;
+  noindex?: boolean;
+}
+
 export interface StrapiPostResponse {
   id: number;
   attributes?: {
@@ -135,5 +142,6 @@ export interface StrapiPostResponse {
       data?: { attributes?: { name?: string; slug?: string } };
     };
     author?: string | { data?: { attributes?: { name?: string } } };
+    seo?: StrapiSeoComponent;
   };
 }

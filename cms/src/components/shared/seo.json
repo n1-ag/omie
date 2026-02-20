@@ -1,0 +1,28 @@
+{
+  "collectionName": "components_shared_seos",
+  "info": {
+    "displayName": "SEO",
+    "icon": "search",
+    "description": "Campos de SEO por página/post (title, description, canonical, noindex)"
+  },
+  "attributes": {
+    "metaTitle": {
+      "type": "string",
+      "default": "",
+      "maxLength": 70
+    },
+    "metaDescription": {
+      "type": "text",
+      "default": "",
+      "maxLength": 160
+    },
+    "canonicalUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "noindex": {
+      "type": "boolean",
+      "default": false
+    }
+  }
+}

@@ -69,4 +69,4 @@ O UID do content type segue `api::<singularName>.<singularName>` (ex.: `api::men
 ## Referencia no projeto
 
 - Exemplos completos: `cms/src/api/menu/`, `cms/src/api/post/`, `cms/src/api/page/`, `cms/src/api/category/`
-- Documentacao: `README-PROJETO.md` (secao Strapi), `cms/src/api/menu/README.md`
+- Documentacao: `README.md` (secao Strapi), `cms/src/api/menu/README.md`

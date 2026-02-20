@@ -8,7 +8,7 @@ interface FooterProps {
 export function Footer({ navigation }: FooterProps) {
   return (
     <footer
-      className="border-t border-[#001e27]/10 bg-[#001e27] px-6 py-12 text-[#f7f7f7]"
+      className="border-t border-petroleo/10 bg-petroleo px-6 py-12 text-cinza-claro"
       role="contentinfo"
     >
       <div className="mx-auto max-w-[1320px]">
@@ -17,13 +17,13 @@ export function Footer({ navigation }: FooterProps) {
             <Link
               key={item.id}
               href={item.url}
-              className="text-sm font-semibold transition-colors hover:text-[#00e2f4]"
+              className="text-sm font-semibold transition-colors hover:text-ciano"
             >
               {item.label}
             </Link>
           ))}
         </nav>
-        <p className="mt-8 text-center text-sm text-[#f7f7f7]/80">
+        <p className="mt-8 text-center text-sm text-cinza-claro/80">
           © {new Date().getFullYear()} OMIE. Todos os direitos reservados.
         </p>
       </div>

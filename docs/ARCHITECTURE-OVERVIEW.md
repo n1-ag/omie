@@ -57,7 +57,7 @@ O site OMIE utiliza um CMS headless para gestao de conteudo com seguranca e flex
 
 ### Por que Tailwind CSS sobre Bootstrap?
 
-O Design System original da OMIE (`site/design-system.html`) foi construido sobre Bootstrap 5. Entretanto, o frontend usa **Tailwind CSS v4** porque:
+O Design System original da OMIE (`site/design-system.html`) foi construido sobre Bootstrap 5. O frontend usa **Tailwind CSS v4** como **prioridade maxima para estilizacao** porque:
 - Melhor integracao com React/Next.js (utility-first, sem classes globais conflitantes)
 - Customizacao de tokens via configuracao (mapeia exatamente o DS)
 - Purge automatico (bundle menor)
@@ -119,6 +119,7 @@ front/
 **IF** integrando com Strapi ou APIs externas → leia [INTEGRATION-PATTERNS.md](./INTEGRATION-PATTERNS.md)
 **IF** checklist antes de commitar ou iniciar feature → leia [IMPLEMENTATION-CHECKLIST.md](./IMPLEMENTATION-CHECKLIST.md)
 **IF** implementando algo visual → consulte `site/design-system.html` e a rule `design-system.mdc`
+**IF** otimizando PageSpeed / Core Web Vitals → leia [PAGESPEED-PERFORMANCE.md](./PAGESPEED-PERFORMANCE.md)
 
 ## Design System
 

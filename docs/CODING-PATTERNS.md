@@ -12,7 +12,7 @@ Padroes de implementacao para componentes, pages e services no Next.js.
 - Server Components por padrao, `'use client'` somente com interatividade
 - Pages delegam para `lib/` — sem logica de negocio nas pages
 - Componentes nunca acessam Strapi API diretamente
-- Tailwind classes conforme Design System — sem estilos inline
+- **Tailwind e prioridade maxima para estilizacao** — classes utilitarias ao maximo; CSS custom e `style` inline so quando o Tailwind nao resolver
 
 **See also**:
 - [INTEGRATION-PATTERNS.md](./INTEGRATION-PATTERNS.md) — anti-corruption layer, Strapi
@@ -287,6 +287,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
 ## Component Composition com Tailwind
 
+**Prioridade maxima**: implemente estilos com Tailwind sempre que possivel. CSS custom e `style` inline so como ultimo recurso.
+
 Criar componentes reutilizaveis usando Tailwind com tokens do Design System.
 
 ### Pattern: Component com Variantes
@@ -299,10 +301,10 @@ interface ButtonProps {
 }
 
 const variantClasses = {
-  blue: 'bg-[#00e2f4] text-[#001e27] border-[#00e2f4] hover:shadow-[0px_6px_0px_0px_rgba(0,226,244,.6)]',
-  green: 'bg-[#d8fe00] text-[#001e27] border-[#d8fe00]',
-  petroleo: 'bg-[#001e27] text-white border-[#001e27] hover:shadow-[0px_6px_0px_0px_rgba(0,30,39,.4)]',
-  transparent: 'bg-transparent text-[#001e27] border-[#001e27]',
+  blue: 'bg-ciano text-petroleo border-ciano hover:shadow-[0_6px_0_0_var(--shadow-ciano)]',
+  green: 'bg-lima text-petroleo border-lima',
+  petroleo: 'bg-petroleo text-white border-petroleo hover:shadow-[0_6px_0_0_var(--shadow-petroleo)]',
+  transparent: 'bg-transparent text-foreground border-petroleo',
 } as const
 
 export function Button({ variant = 'blue', children, href }: ButtonProps) {
@@ -401,14 +403,17 @@ export default async function BlogPage() {
 }
 ```
 
-### 3. Estilos Fora do Design System
+### 3. Estilos Fora do Design System ou Sem Priorizar Tailwind
 
 ```tsx
 // ERRADO: cor inventada, nao existe no DS
 <button className="bg-blue-500 text-white rounded-lg">
 
-// CORRETO: cores do DS
-<button className="bg-[#00e2f4] text-[#001e27] rounded-[40px]">
+// ERRADO: CSS custom quando Tailwind resolve
+<button style={{ padding: '10px', borderRadius: '8px' }}>
+
+// CORRETO: Tailwind + variaveis do DS (front/src/app/globals.css)
+<button className="bg-ciano text-petroleo rounded-[40px] px-6 py-2.5">
 ```
 
 ### 4. Logica de Negocio na Page

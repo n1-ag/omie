@@ -9,7 +9,7 @@ const STRAPI_API_TOKEN = process.env.STRAPI_API_TOKEN ?? '';
 export async function fetchPageBySlug(slug: string): Promise<StrapiPageResponse | null> {
   const params = new URLSearchParams({
     'filters[slug][$eq]': slug,
-    populate: 'featuredImage',
+    populate: 'featuredImage,seo',
   });
 
   const response = await fetch(`${STRAPI_API_URL}/api/pages?${params}`, {
@@ -30,6 +30,13 @@ export async function fetchPageBySlug(slug: string): Promise<StrapiPageResponse 
   return item;
 }
 
+export interface StrapiSeoComponent {
+  metaTitle?: string;
+  metaDescription?: string;
+  canonicalUrl?: string;
+  noindex?: boolean;
+}
+
 export interface StrapiPageResponse {
   id: number;
   attributes?: {
@@ -39,5 +46,6 @@ export interface StrapiPageResponse {
     featuredImage?: {
       data?: { attributes?: { url?: string } };
     };
+    seo?: StrapiSeoComponent;
   };
 }

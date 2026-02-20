@@ -3,7 +3,7 @@
  * Ativar com STRAPI_MOCK=true no .env.local.
  */
 
-import type { Post, Page, MenuItem } from './types';
+import type { Post, Page, MenuItem, SiteConfig } from './types';
 
 const mockPosts: Post[] = [
   {
@@ -13,6 +13,7 @@ const mockPosts: Post[] = [
     excerpt: 'Descubra os critérios essenciais para escolher o ERP ideal.',
     content: '<p>Conteúdo completo do post...</p>',
     date: '16 de fevereiro de 2026',
+    publishedAtIso: '2026-02-16T12:00:00.000Z',
     featuredImage: '',
     category: 'Contabilidade Empresarial',
     categorySlug: 'contabilidade',
@@ -25,6 +26,7 @@ const mockPosts: Post[] = [
     excerpt: 'Dicas práticas para organizar as finanças da sua empresa.',
     content: '<p>Conteúdo do post...</p>',
     date: '15 de fevereiro de 2026',
+    publishedAtIso: '2026-02-15T12:00:00.000Z',
     featuredImage: '',
     category: 'Gestão',
     categorySlug: 'gestao',
@@ -64,4 +66,33 @@ export async function getMenusMock(): Promise<{ header: MenuItem[]; footer: Menu
     header: mockMenuItems,
     footer: [...mockMenuItems, { id: '4', label: 'Contato', url: '/contato' }],
   };
+}
+
+const defaultSiteConfig: SiteConfig = {
+  siteTitle: 'OMIE | Sistema de Gestão ERP Online',
+  siteDescription:
+    'Sistema de gestão ERP online para PMEs e grandes empresas. Contabilidade, financeiro e mais.',
+  logo: '',
+  logoAlt: 'OMIE - Sistema de Gestão ERP',
+  favicon: '',
+  ogImage: '',
+  ga4MeasurementId: '',
+  gtmContainerId: '',
+  gscVerification: '',
+  organizationJson: {
+    name: 'Omie',
+    url: 'https://www.omie.com.br/',
+    sameAs: [
+      'https://www.linkedin.com/company/omie',
+      'https://www.facebook.com/omieoficial',
+      'https://www.instagram.com/omieoficial',
+      'https://www.youtube.com/user/omiexperience',
+      'https://blog.omie.com.br',
+    ],
+  },
+};
+
+export async function getSiteConfigMock(): Promise<SiteConfig> {
+  await new Promise((r) => setTimeout(r, 80));
+  return { ...defaultSiteConfig };
 }
