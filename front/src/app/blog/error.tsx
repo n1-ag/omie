@@ -16,16 +16,16 @@ export default function BlogError({
   return (
     <div className="section-padding">
       <div className="mx-auto max-w-[1320px] px-6 text-center">
-        <h2 className="text-xl font-bold text-[#001e27]">
+        <h2 className="text-xl font-bold text-foreground">
           Algo deu errado ao carregar o blog
         </h2>
-        <p className="mt-2 text-[#001e27]/70">
+        <p className="mt-2 text-foreground/70">
           Tente novamente em alguns instantes.
         </p>
         <button
           type="button"
           onClick={reset}
-          className="mt-6 rounded-[40px] border-[3px] border-[#001e27] bg-[#001e27] px-6 py-2.5 font-bold text-white transition-all hover:shadow-[0_6px_0_0_rgba(0,30,39,.4)]"
+          className="mt-6 rounded-[40px] border-[3px] border-petroleo bg-petroleo px-6 py-2.5 font-bold text-white transition-all hover:shadow-[0_6px_0_0_var(--shadow-petroleo)]"
         >
           Tentar novamente
         </button>

@@ -6,7 +6,7 @@ alwaysApply: true
 
 O arquivo `site/design-system.html` e a referencia obrigatoria para toda implementacao visual. Nenhum componente pode divergir dos tokens e padroes definidos nele.
 
-Ao implementar qualquer componente visual, **sempre consulte `site/design-system.html`** para validar cores, tipografia, espacamento, border-radius, hover states e animacoes.
+Ao implementar qualquer componente visual, **sempre consulte `site/design-system.html`** para validar cores, tipografia, espacamento, border-radius, hover states e animacoes. Implemente estilos **priorizando Tailwind ao maximo** — classes utilitarias primeiro; CSS custom ou `style` inline so quando necessario.
 
 ## Tipografia
 
@@ -31,37 +31,51 @@ Ao implementar qualquer componente visual, **sempre consulte `site/design-system
 - **Skew Highlight**: background `#00e2f4`, `skewX(160deg)`
 - **Texto Secundario**: `rgba(0,30,39,.6)`
 
-## Cores
+## Cores — SEMPRE usar variáveis (evitar cores personalizadas)
 
-### Marca
+Todas as cores do DS estao definidas em `front/src/app/globals.css` como variaveis CSS e expostas no Tailwind via `@theme inline`. **Nunca** usar hex direto nos componentes.
+
+### Marca (classes Tailwind)
+| Nome | Token CSS | Classes Tailwind |
+|---|---|---|
+| Petroleo | `--petroleo` | `bg-petroleo`, `text-petroleo`, `border-petroleo` |
+| Ciano | `--ciano` | `bg-ciano`, `text-ciano`, `border-ciano` |
+| Lima | `--lima` | `bg-lima`, `text-lima` |
+| Laranja | `--laranja` | `bg-laranja`, `text-laranja` |
+| Roxo | `--roxo` | `bg-roxo`, `text-roxo` |
+| Azul GClick | `--azul-gclick` | `bg-azul-gclick` |
+
+### Neutros e texto
+| Nome | Classes |
+|---|---|
+| Foreground (texto principal) | `text-foreground`, `bg-foreground` |
+| Cinza Claro | `bg-cinza-claro`, `text-cinza-claro` |
+| Borda | `border-borda` |
+| Blog Category | `text-blog-category`, `border-blog-category` |
+
+### Anti-pattern
+```tsx
+// ERRADO: hex direto
+<div className="text-[#001e27] bg-[#00e2f4]">
+
+// CORRETO: variaveis do DS
+<div className="text-foreground bg-ciano">
+```
+
+### Neutros e fundos (referencia)
 | Nome | Hex | Classe |
 |---|---|---|
-| Petroleo | `#001e27` | `.bg-petroleo` |
-| Azul Cyan | `#00e2f4` | `.bg-azul` |
-| Verde Lima | `#d8fe00` | `.bg-verde` |
-| Laranja | `#ff601f` | `.bg-laranja` |
-| Roxo | `#5e16ff` | `.bg-roxo` |
-| Azul GClick | `#a4f6fc` | `.bg-azul-gclick` |
+| White | `#ffffff` | `bg-background` |
+| Cinza Claro | `#f7f7f7` | `bg-cinza-claro` |
+| Cinza Escuro | `#eceeee` | `bg-cinza-escuro` |
+| Borda | `#dbdfde` | `border-borda` |
 
-### Neutros e Fundos
-| Nome | Hex |
+### Texto (referencia)
+| Nome | Classe Tailwind |
 |---|---|
-| White | `#ffffff` |
-| Cinza Claro | `#f7f7f7` |
-| Cinza Escuro | `#eceeee` |
-| Borda | `#dbdfde` |
-| Petroleo Claro | `#00353f` |
-| Blue Tint | `#F9FBFF` |
-
-### Texto
-| Nome | Valor |
-|---|---|
-| Principal | `#001e27` |
-| Secundario | `rgba(0,30,39,.6)` |
-| Blog Heading | `#131313` |
-| Blog Category | `#6EC1E4` |
-| Blog Meta | `#515151` |
-| Nav Dropdown Desc | `#677489` |
+| Principal | `text-foreground` |
+| Secundario | `text-foreground/60` ou `text-foreground/70` |
+| Blog Category | `text-blog-category` |
 
 ### Gradientes
 - Card Banner: `linear-gradient(70deg, #cbcbd7 20%, #e4e4f0 70%)`

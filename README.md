@@ -98,7 +98,7 @@ Hoje o content-type **Menu** usa um único campo **JSON** por simplicidade. Para
 2. No **Content-Type Builder** → Menu: trocar o atributo `items` de tipo **JSON** para tipo **Component** (repeatable), usando esse componente.
 3. No front, o transformer em `lib/strapi/` continua consumindo a mesma estrutura lógica; a API do Strapi passa a retornar o array de itens já como relação/componente.
 
-Assim, no **Content Manager** o usuário passa a preencher “Label” e “URL” em formulário, adicionar subitens por botão, sem editar JSON. Custom Post Types (CPT) e outros conteúdos estruturados seguem a mesma ideia: preferir **relações e componentes** no Strapi em vez de campos JSON quando o público for leigo.
+Assim, no **Content Manager** o usuário passa a preencher "Label" e "URL" em formulário, adicionar subitens por botão, sem editar JSON. Custom Post Types (CPT) e outros conteúdos estruturados seguem a mesma ideia: preferir **relações e componentes** no Strapi em vez de campos JSON quando o público for leigo.
 
 O schema atual do Menu está em `cms/src/api/menu/content-types/menu/schema.json`.
 
@@ -140,14 +140,15 @@ O projeto **já está preparado** para usar **Tailwind CSS v4**:
 - Dependências em `front/package.json`: `tailwindcss` e `@tailwindcss/postcss`.
 - Entrada em `front/src/app/globals.css`: `@import "tailwindcss"` e blocos `@theme inline` com tokens (cores, fontes).
 - PostCSS em `front/postcss.config.mjs` com `@tailwindcss/postcss`.
+- **Pre-commit**: Husky + lint-staged garantem `npm run build` e `npm run lint` antes de cada commit (ver seção Pre-Commit).
 
-Use classes utilitárias Tailwind nos componentes; evite CSS custom ou `style` inline quando Tailwind resolver. Padrões e tokens do Design System estão em `docs/CODING-PATTERNS.md` e `docs/ARCHITECTURE-OVERVIEW.md`.
+Use classes utilitárias Tailwind nos componentes; evite CSS custom ou `style` inline quando Tailwind resolver. Padrões e tokens do Design System estão em `docs/CODING-PATTERNS.md` e `docs/ARCHITECTURE-OVERVIEW.md`. **Sempre prefira variáveis de cor** (ver `front/src/app/globals.css` e rule `design-system.mdc`).
 
 ### Estrutura do front (resumo)
 
 - `src/app/` — App Router (layout, home, blog, blog/[slug]).
 - `src/app/components/` — layout (Header, Footer) e blog (PostCard, PostList).
-- `src/lib/strapi/` — anti-corruption layer:
+- `lib/strapi/` — anti-corruption layer:
   - `client.ts` — ponto de entrada (getPosts, getPost, getPage, getMenus).
   - `types.ts` — tipos do domínio (Post, Page, MenuItem, etc.).
   - `api/` — chamadas REST ao Strapi (uso interno).
@@ -155,6 +156,20 @@ Use classes utilitárias Tailwind nos componentes; evite CSS custom ou `style` i
   - `client.mock.ts` — mock quando `STRAPI_MOCK=true`.
 
 Nenhum componente importa de `lib/strapi/api/*`; apenas de `client` e `types`.
+
+### Pre-Commit (Husky + lint-staged)
+
+No `front/`, o pre-commit executa automaticamente:
+
+- `npm run lint` nos arquivos staged
+- `npm run build` para garantir que Tailwind e Next.js compilam corretamente
+
+Para configurar (uma vez):
+
+```bash
+cd front
+npm run prepare  # instala hooks do Husky
+```
 
 ## 3. Ordem recomendada
 
@@ -168,6 +183,7 @@ Nenhum componente importa de `lib/strapi/api/*`; apenas de `client` e `types`.
 - Integração Strapi e ACL: `docs/INTEGRATION-PATTERNS.md`
 - Padrões de código: `docs/CODING-PATTERNS.md`
 - Checklist de implementação: `docs/IMPLEMENTATION-CHECKLIST.md`
+- PageSpeed e SSR: `docs/PAGESPEED-PERFORMANCE.md`
 
 ---
 
